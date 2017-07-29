@@ -60,7 +60,6 @@ class Hacker extends FlxSprite
 		//TWEAK VALUE
 		_life = 2;
 		
-		
 		//DEBUG SECTION
 		FlxG.watch.add(this, "_life", "Player " + this.id + " :");
 		
@@ -109,7 +108,7 @@ class Hacker extends FlxSprite
 
 	public function getCounterHack():Void
 	{
-
+		//TODO SI ON A DU TEMPS
 	}
 
 	public function getBullied():Void
@@ -118,7 +117,6 @@ class Hacker extends FlxSprite
 		{
 			this._life--;
 		}
-		
 		
 		if (_life == 0)
 		{
@@ -130,13 +128,6 @@ class Hacker extends FlxSprite
 		}
 	}
 
-	public function checkIfBecomeInoffensive():Void
-	{
-		if (_life <= 0)
-		{
-			_isOffensive = false;
-		}
-	}
 
 	public function idle():Void
 	{
@@ -211,7 +202,6 @@ class Hacker extends FlxSprite
 	{
 		
 		_brain.update();
-		//checkIfBecomeInoffensive();
 		super.update(elapsed);
 	}
 

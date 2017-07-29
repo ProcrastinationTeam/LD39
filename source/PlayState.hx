@@ -94,7 +94,7 @@ class PlayState extends FlxState
 		_hud = new HUD();
 		add(_hud);
 
-		var hudCam = new FlxCamera(0, 0, 64, 316, 1);
+		var hudCam = new FlxCamera(0, 0, 64, 480, 1);
 
 		FlxG.cameras.add(hudCam);
 

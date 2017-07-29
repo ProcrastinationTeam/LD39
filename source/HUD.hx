@@ -42,7 +42,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		_callingIcon.visible = false;
 		add(_callingIcon);
 		
-		_batteryBar = new FlxBar(0, 16, BOTTOM_TO_TOP, 64, 300);
+		_batteryBar = new FlxBar(0, 16, BOTTOM_TO_TOP, 64, 464);
 		_batteryBar.createGradientFilledBar([FlxColor.BLUE, FlxColor.PURPLE, FlxColor.RED], 14, 90, true, FlxColor.BLACK);
 		add(_batteryBar);
 		
