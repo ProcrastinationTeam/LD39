@@ -39,7 +39,7 @@ class GameOverState extends FlxState
 		_startDisplay.screenCenter();
 		add(_startDisplay);
 
-		_credit = new FlxText(0, 0, 0, (_win ? "Congratulaions ! " : "You suck"), 8, true);
+		_credit = new FlxText(0, 0, 0, (_win ? "Congratulations ! " : "You suck"), 8, true);
 		_credit.screenCenter();
 		_credit.y += 100;
 		add(_credit);

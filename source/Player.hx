@@ -1,13 +1,10 @@
 package;
 
-import flixel.FlxSprite;
-import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.system.FlxSound;
-import flixel.util.FlxColor;
 import flixel.FlxG;
-import flixel.math.FlxPoint;
 import flixel.FlxObject;
-import flixel.input.keyboard.FlxKey;
+import flixel.FlxSprite;
+import flixel.math.FlxPoint;
+import flixel.system.FlxSound;
 
 class Player extends FlxSprite
 {
