@@ -25,8 +25,10 @@ class Hacker extends FlxSprite
 	private var _moveDir:Float;
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
-	
-	public var isInRangeForHack : Bool = false;
+
+	public var _isInRangeForHack : Bool = false;
+	public var _life : Int;
+	public var _isOffensive : Bool;
 
 	//DEBUG LOG
 	public var distance : Int;
@@ -36,6 +38,8 @@ class Hacker extends FlxSprite
 		super(X, Y);
 		id = Id;
 		etype = EType;
+		_isOffensive = true;
+
 		loadGraphic("assets/images/enemy-" + etype + ".png", true, 16, 16);
 
 		//setFacingFlip(FlxObject.LEFT, false, false);
@@ -53,6 +57,13 @@ class Hacker extends FlxSprite
 		_idleTmr = 0;
 		playerPos = FlxPoint.get();
 
+		//TWEAK VALUE
+		_life = 2;
+		
+		
+		//DEBUG SECTION
+		FlxG.watch.add(this, "_life", "Player " + this.id + " :");
+		
 	}
 
 	override public function draw():Void
@@ -96,9 +107,42 @@ class Hacker extends FlxSprite
 		animation.play("hack");
 	}
 
+	public function getCounterHack():Void
+	{
+
+	}
+
+	public function getBullied():Void
+	{
+		if (_life > 0)
+		{
+			this._life--;
+		}
+		
+		
+		if (_life == 0)
+		{
+			_brain.activeState = idle;
+			Battery.instance._numberOfHackersHacking--;
+			//Uninstanciation de la variable
+			_life = -1;
+			_isOffensive  = false;
+		}
+	}
+
+	public function checkIfBecomeInoffensive():Void
+	{
+		if (_life <= 0)
+		{
+			_isOffensive = false;
+		}
+	}
+
 	public function idle():Void
 	{
-		if (seesPlayer)
+		animation.play("idle");
+		
+		if (seesPlayer && _isOffensive)
 		{
 			_brain.activeState = chase;
 		}
@@ -126,6 +170,7 @@ class Hacker extends FlxSprite
 
 	public function chase():Void
 	{
+
 		if (!seesPlayer)
 		{
 			//Modification du Idle probable
@@ -137,8 +182,12 @@ class Hacker extends FlxSprite
 			if (distance > 50)
 			{
 				FlxVelocity.moveTowardsPoint(this, playerPos, Std.int(speed));
-				isInRangeForHack = false;
-				
+				if (_isInRangeForHack)
+				{
+					Battery.instance._numberOfHackersHacking--;
+				}
+				_isInRangeForHack = false;
+
 				//Bourrinage animation
 				animation.finish();
 			}
@@ -146,12 +195,13 @@ class Hacker extends FlxSprite
 			{
 				this.velocity = new FlxPoint(0, 0);
 				//Fonction de Hack lancé quand le hacker est en range (idée de rajouter une connexion de x secondes)
-				
-				if (isInRangeForHack == true)
+
+				if (!_isInRangeForHack)
 				{
 					hackPlayer();
+					Battery.instance._numberOfHackersHacking++;
 				}
-				isInRangeForHack = true;
+				_isInRangeForHack = true;
 			}
 
 		}
@@ -159,8 +209,9 @@ class Hacker extends FlxSprite
 
 	override public function update(elapsed:Float):Void
 	{
-
+		
 		_brain.update();
+		//checkIfBecomeInoffensive();
 		super.update(elapsed);
 	}
 

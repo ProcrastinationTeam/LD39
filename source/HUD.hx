@@ -33,6 +33,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		_wifiIcon.x = 0;
 		_wifiIcon.y = 0;
 		_wifiIcon.visible = false;
+		_wifiIcon.animation.add("hack", [0, 1, 2, 3], 3, true);
 		add(_wifiIcon);
 		
 		_callingIcon = new FlxSprite().loadGraphic(AssetPaths.call_icon__png, true, 16, 16);
@@ -56,11 +57,27 @@ class HUD extends FlxTypedGroup<FlxSprite>
 			sprite.scrollFactor.set(0, 0);
 		});
 	}
+	
+	
 
 	public function updateHUD(BatteryValue:Float):Void {
 		var vol:Int = Math.round(BatteryValue);
 		_batteryBar.value = vol;
 		_batteryText.text = vol + "%";
+		
+		if (Battery.instance._numberOfHackersHacking > 0)
+		{
+			_wifiIcon.visible = true;
+			_wifiIcon.animation.play("hack");
+		}
+		else
+		{
+			if (_wifiIcon.visible)
+			{
+				_wifiIcon.visible = false;
+				_wifiIcon.animation.finish();
+			}
+		}
 	}
 	
 	public function startCall():Void {

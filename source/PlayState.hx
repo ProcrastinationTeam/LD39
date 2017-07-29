@@ -39,6 +39,7 @@ class PlayState extends FlxState
 
 	override public function create():Void
 	{
+		
 		_isOut = false;
 
 		_exit = new FlxSprite();
@@ -97,7 +98,14 @@ class PlayState extends FlxState
 
 		FlxG.cameras.add(hudCam);
 
+		//ZONE DE DEBUG
+		FlxG.watch.add(Battery.instance, "_numberOfHackersHacking" );
+		///////////
+		
 		super.create();
+		
+		
+		
 	}
 
 	private function placeEntities(entityName:String, entityData:Xml):Void
@@ -122,6 +130,7 @@ class PlayState extends FlxState
 
 	}
 
+	//Methode a migrer dans l'ideal 
 	private function checkEnemyVision(e:Hacker):Void
 	{
 		e.distance = FlxMath.distanceBetween(_player, e);
@@ -131,10 +140,22 @@ class PlayState extends FlxState
 		{
 			e.seesPlayer = true;
 			e.playerPos.copyFrom(_player.getMidpoint());
+			
 		}
 		else
 			e.seesPlayer = false;
 	}
+	
+	/*private function checkRangeForHack(e:Hacker):Void
+	{
+	
+		if (e.isInRangeForHack == true)
+		{
+			_battery._numberOfHackersHacking++;
+		}
+		
+	}*/
+	
 	override public function update(elapsed:Float):Void
 	{
 
@@ -143,17 +164,23 @@ class PlayState extends FlxState
 		//COLLISION SECTION
 		FlxG.collide(_player, _mWalls);
 		FlxG.overlap(_player, _exit, playerExit);
+		
+		
 		//FlxG.collide(_player, _grpHackers); //
 		FlxG.collide(_grpHackers, _grpHackers);
 		FlxG.collide(_grpHackers, _mWalls);
+
+		//Action applique a un groupe d'entité
 		_grpHackers.forEachAlive(checkEnemyVision);
+		//_grpHackers.forEachAlive(checkRangeForHack);
 
 		//BATTERY SECTION
 		var batteryLevel:Int = Math.round(_battery._batteryLevel);
 		_hud.updateHUD(batteryLevel);
 
 		_battery._batteryLevel += FlxG.mouse.wheel;
-
+		
+		//DEBUG FUNCTION SECTION
 		if (FlxG.keys.justPressed.C)
 		{
 			_battery._isInCallWithMom = !_battery._isInCallWithMom;
@@ -177,6 +204,10 @@ class PlayState extends FlxState
 			_showWifi = !_showWifi;
 			_hud.showWifi(_showWifi);
 		}
+		if (FlxG.keys.justPressed.B)
+		{
+			_grpHackers.forEachAlive(bullied);
+		}
 
 		if (_battery._batteryLevel <= 0)
 		{
@@ -184,7 +215,16 @@ class PlayState extends FlxState
 			gameOver(false);
 		}
 	}
-
+	
+	private function bullied(h:Hacker):Void
+	{
+		//VALEUR A TWEAK
+		if (FlxMath.distanceBetween(_player, h) < 15)
+		{
+			h.getBullied();
+		}
+	}
+	
 	private function playerExit(P:Player, C:FlxSprite):Void
 	{
 		if (P.alive && P.exists)

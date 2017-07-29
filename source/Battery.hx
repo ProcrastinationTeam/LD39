@@ -16,7 +16,7 @@ class Battery extends FlxSprite
 	public var _batteryDecreaseRatePerSecondThroughCall	: Float = 0.5;
 	
 	// Pompage de batterie / hacker / seconde
-	private var _numberOfHackersHacking 					: Int = 0;
+	public var _numberOfHackersHacking 					: Int = 0;
 	private var _batteryDecreaseRatePerSecondPerHacker		: Float = 0.2;
 
 	private function new()
@@ -28,6 +28,7 @@ class Battery extends FlxSprite
 	{
 		_batteryDecreaseRatePerSecond = BatteryDecreaseRatePerSecond;
 		_batteryLevel = InitialBatteryValue;
+		_numberOfHackersHacking = 0;
 	}
 
 	override public function update(elapsed:Float):Void
