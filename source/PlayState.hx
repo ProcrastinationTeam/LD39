@@ -9,10 +9,12 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
+import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
 {
@@ -82,14 +84,16 @@ class PlayState extends FlxState
 		_map.loadEntities(placeEntities, "entities");
 
 		// Baisser la deadzone de la caméra si la caméra suit pas assez
-		FlxG.camera.follow(_player, TOPDOWN_TIGHT, 1);
+		FlxG.camera.follow(_player, LOCKON, 1);
+		// TODO 
+		//FlxG.camera.deadzone
 
 		_battery = Battery.instance;
 		add(_battery);
 
 		_battery.initBattery(FlxG.random.float(40, 60), 0.3);
 
-		FlxG.camera.zoom = 3;
+		FlxG.camera.zoom = 4;
 
 		_hud = new HUD();
 		add(_hud);
@@ -103,9 +107,6 @@ class PlayState extends FlxState
 		///////////
 		
 		super.create();
-		
-		
-		
 	}
 
 	private function placeEntities(entityName:String, entityData:Xml):Void
@@ -158,7 +159,6 @@ class PlayState extends FlxState
 	
 	override public function update(elapsed:Float):Void
 	{
-
 		super.update(elapsed);
 
 		//COLLISION SECTION
@@ -179,6 +179,10 @@ class PlayState extends FlxState
 		_hud.updateHUD(batteryLevel);
 
 		_battery._batteryLevel += FlxG.mouse.wheel;
+		
+		if (FlxG.keys.pressed.X && _player._canPush) {
+			_grpHackers.forEachAlive(tryToPush);
+		}
 		
 		//DEBUG FUNCTION SECTION
 		if (FlxG.keys.justPressed.C)
@@ -208,6 +212,7 @@ class PlayState extends FlxState
 		{
 			_grpHackers.forEachAlive(bullied);
 		}
+		//DEBUG FUNCTION SECTION
 
 		if (_battery._batteryLevel <= 0)
 		{
@@ -216,12 +221,28 @@ class PlayState extends FlxState
 		}
 	}
 	
+	private function AfterPushTimer(Timer:FlxTimer):Void {
+		_player._canPush  = true;
+		_player._currentStamina = _player._maxStamina;
+	}
+
 	private function bullied(h:Hacker):Void
 	{
 		//VALEUR A TWEAK
 		if (FlxMath.distanceBetween(_player, h) < 15)
 		{
 			h.getBullied();
+		}
+	}
+	
+	private function tryToPush(h:Hacker):Void
+	{
+		//VALEUR A TWEAK
+		if (FlxMath.distanceBetween(_player, h) < 15)
+		{
+			h.getBullied();
+			_player._canPush = false;
+			new FlxTimer().start(_player._pushDelay, AfterPushTimer);
 		}
 	}
 	

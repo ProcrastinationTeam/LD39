@@ -5,12 +5,28 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
+import flixel.util.FlxTimer;
 
 class Player extends FlxSprite
 {
-	public var speed:Float = 200;
-	private var _sndStep:FlxSound;
+	public var speed								: Float = 150;
+	public var _sndStep								: FlxSound;
+	
+	public var _maxStamina							: Float = 2;
+	public var _sprintMultiplier					: Float = 1.5;
+	public var _staminaRecoveryPerSecond			: Float = 1;
+	public var _staminaSprintConsumptionPerSecond	: Float = 1;
+	public var _delayAfterEmptyStamina 				: Float;
+	
+	public var _pushCost							: Float = 0.5;
+	public var _pushDelay							: Float = 0.5;
+	
+	public var _currentStamina						: Float;
+	public var _isSprinting							: Bool = false;
+	public var _canSprint							: Bool = true;
 
+	public var _canPush								: Bool = true;
+	
 	public function new(?X:Float=0, ?Y:Float=0)
 	{
 		super(X, Y);
@@ -27,14 +43,38 @@ class Player extends FlxSprite
 
 		setSize(8, 14);
 		offset.set(4, 2);
+		
+		_delayAfterEmptyStamina = _staminaRecoveryPerSecond * _maxStamina;
+		_currentStamina = _maxStamina;
+		
+		FlxG.watch.add(this, "_currentStamina");
+		FlxG.watch.add(this, "_isSprinting");
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		movement();
+		if (_isSprinting) {
+			_currentStamina -= elapsed * _staminaSprintConsumptionPerSecond;
+		} else {
+			_currentStamina += elapsed * _staminaRecoveryPerSecond;
+			if (_currentStamina > _maxStamina){
+				_currentStamina = _maxStamina;
+			}
+		}
+		if (_currentStamina <= 0 && _canSprint) {
+			_canSprint = false;
+			new FlxTimer().start(_delayAfterEmptyStamina, StaminaRecoveryFinished);
+		}
+		
 		super.update(elapsed);
 	}
-
+	
+	private function StaminaRecoveryFinished(Timer:FlxTimer):Void {
+		_canSprint = true;
+		_currentStamina = _maxStamina;
+	}
+	
 	private function movement():Void
 	{
 		var _up:Bool = false;
@@ -46,6 +86,8 @@ class Player extends FlxSprite
 		_down = FlxG.keys.anyPressed([DOWN, S]);
 		_left = FlxG.keys.anyPressed([LEFT, Q]);
 		_right = FlxG.keys.anyPressed([RIGHT, D]);
+				
+		_isSprinting = FlxG.keys.pressed.SPACE && _canSprint;
 
 		if (_up && _down)
 		{
@@ -92,7 +134,7 @@ class Player extends FlxSprite
 				facing = FlxObject.RIGHT;
 			}
 
-			velocity.set(speed, 0);
+			velocity.set((_isSprinting ? speed * _sprintMultiplier : speed), 0);
 			velocity.rotate(FlxPoint.weak(0, 0), _ma);
 
 			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
