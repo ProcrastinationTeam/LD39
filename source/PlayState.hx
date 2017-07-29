@@ -37,11 +37,27 @@ class PlayState extends FlxState
 		add(_exit);
 
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
-		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "background");
+		_mWalls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
 		_mWalls.follow();
 		_mWalls.setTileProperties(1, FlxObject.NONE);
-		_mWalls.setTileProperties(38, FlxObject.ANY);
-		_mWalls.setTileProperties(37, FlxObject.ANY);
+		_mWalls.setTileProperties(4, FlxObject.NONE);
+		_mWalls.setTileProperties(7, FlxObject.NONE);
+		_mWalls.setTileProperties(38, FlxObject.NONE);
+		_mWalls.setTileProperties(39, FlxObject.NONE);
+		_mWalls.setTileProperties(40, FlxObject.NONE);
+		_mWalls.setTileProperties(41, FlxObject.NONE);
+		_mWalls.setTileProperties(42, FlxObject.NONE);
+		_mWalls.setTileProperties(43, FlxObject.NONE);
+		_mWalls.setTileProperties(44, FlxObject.NONE);
+		
+		_mWalls.setTileProperties(45, FlxObject.ANY);
+		_mWalls.setTileProperties(46, FlxObject.ANY);
+		_mWalls.setTileProperties(48, FlxObject.ANY);
+		_mWalls.setTileProperties(10, FlxObject.ANY);
+		_mWalls.setTileProperties(9, FlxObject.ANY);
+		_mWalls.setTileProperties(75, FlxObject.ANY);
+		_mWalls.setTileProperties(76, FlxObject.ANY);
+		_mWalls.setTileProperties(77, FlxObject.ANY);
 		add(_mWalls);
 
 		_player = new Player();
