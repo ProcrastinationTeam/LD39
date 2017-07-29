@@ -21,11 +21,12 @@ class PlayState extends FlxState
 	private var _exit : FlxSprite;
 	private var _isOut: Bool;
 
-	private var _barVolume				: FlxBar;
 	private var _volume					: Float = 50;
 
 	private var _initialRemainingTime 	: Float = 60;
 	private var _currentRemainingTime 	: Float = 60;
+	
+	private var _hud 					: HUD;
 
 	override public function create():Void
 	{
@@ -55,15 +56,10 @@ class PlayState extends FlxState
 
 		FlxG.camera.zoom = 2;
 		
-		_barVolume = new FlxBar(FlxG.camera.x, FlxG.camera.y, BOTTOM_TO_TOP, 50, 300);
-		_barVolume.createFilledBar(0xff464646, FlxColor.WHITE, true, FlxColor.WHITE);
-		_barVolume.value = _battery._batteryValue;
-		//_barVolume.scrollFactor.set(0, 0);
-		add(_barVolume);
+		_hud = new HUD();
+		add(_hud);
 		
 		var hudCam = new FlxCamera(0, 0, 50, 300, 1);
-		//hudCam.x = -20;
-		hudCam.target = _barVolume;
 		FlxG.cameras.add(hudCam);
 		
 		super.create();
@@ -94,16 +90,11 @@ class PlayState extends FlxState
 		FlxG.collide(_player, _mWalls);
 		FlxG.overlap(_player, _exit, playerExit);
 		
-		_barVolume.x = FlxG.camera.x;
-		_barVolume.y = FlxG.camera.y;
-
-		//_battery._batteryValue += FlxG.mouse.wheel;
-		
-		FlxG.camera.zoom += FlxG.mouse.wheel / 20.;
-
 		var vol:Int = Math.round(_battery._batteryValue);
-		_barVolume.value = vol;
-
+		_hud.updateHUD(vol);
+		
+		_battery._batteryValue += FlxG.mouse.wheel;
+		
 		if (FlxG.keys.justPressed.C)
 		{
 			_battery._isCallingMom = !_battery._isCallingMom;
