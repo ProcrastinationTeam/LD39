@@ -114,6 +114,11 @@ class PlayState extends FlxState
 		
 		_battery._batteryLevel += FlxG.mouse.wheel;
 		
+		if (FlxG.keys.pressed.X && _player._canPush) {
+			_grpHackers.forEachAlive(tryToPush);
+			new FlxTimer().start(_pushDelay, AfterPushTimer);
+		}
+		
 		if (FlxG.keys.justPressed.C)
 		{
 			_battery._isInCallWithMom = !_battery._isInCallWithMom;
@@ -140,6 +145,11 @@ class PlayState extends FlxState
 			// GAMEOVER
 			gameOver(false);
 		}
+	}
+	
+	private function AfterPushTimer(Timer:FlxTimer):Void {
+		_player._canPush  = true;
+		_player._currentStamina = _player._maxStamina;
 	}
 
 	private function playerExit(P:Player, C:FlxSprite):Void
