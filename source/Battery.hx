@@ -6,8 +6,10 @@ import flixel.FlxG;
 
 class Battery extends FlxSprite
 {
-	public var _batteryLevel							: Float;
-	public var _batteryDecreaseRatePerSecond			: Float;
+	public static var instance(default, null): Battery = new Battery();
+	
+	public var _batteryLevel							: Float = 50;
+	public var _batteryDecreaseRatePerSecond			: Float = 0.25;
 
 	// Si on est entrain de parler avec maman, ça pompe la batterie
 	public var _isInCallWithMom							: Bool = false;
@@ -17,14 +19,15 @@ class Battery extends FlxSprite
 	private var _numberOfHackersHacking 					: Int = 0;
 	private var _batteryDecreaseRatePerSecondPerHacker		: Float = 0.2;
 
-	public function new(InitialBatteryValue:Float, BatteryDecreaseRatePerSecond:Float)
+	private function new()
 	{
 		super();
-
-		loadGraphic(AssetPaths.player__png, true, 16, 16);
-
-		_batteryLevel = InitialBatteryValue;
+	}
+	
+	public function initBattery(InitialBatteryValue:Float, BatteryDecreaseRatePerSecond:Float):Void
+	{
 		_batteryDecreaseRatePerSecond = BatteryDecreaseRatePerSecond;
+		_batteryLevel = InitialBatteryValue;
 	}
 
 	override public function update(elapsed:Float):Void

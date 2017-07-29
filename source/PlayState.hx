@@ -70,8 +70,10 @@ class PlayState extends FlxState
 		// Baisser la deadzone de la caméra si la caméra suit pas assez
 		FlxG.camera.follow(_player, TOPDOWN_TIGHT, 1);
 
-		_battery = new Battery(FlxG.random.float(40, 60), 0.25);
+		_battery = Battery.instance;
 		add(_battery);
+		
+		_battery.initBattery(FlxG.random.float(40, 60), 0.3);
 
 		FlxG.camera.zoom = 3;
 		
