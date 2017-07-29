@@ -35,9 +35,11 @@ class PlayState extends FlxState
 
 	//Enemy variables
 	private var _grpHackers				:FlxTypedGroup<Hacker>;
+	private var _grpPnj					:FlxTypedGroup<PNJ>;
 
 	//Debug variable
 	private var _counterHacker 			:Int = 0;
+	private var _counterPnj				:Int = 0;
 
 	override public function create():Void
 	{
@@ -80,6 +82,10 @@ class PlayState extends FlxState
 		//HackerSpawn
 		_grpHackers = new FlxTypedGroup<Hacker>();
 		add(_grpHackers);
+		
+		//PNJ spawn
+		_grpPnj = new FlxTypedGroup<PNJ>();
+		add(_grpPnj);
 
 		_map.loadEntities(placeEntities, "entities");
 
@@ -130,6 +136,11 @@ class PlayState extends FlxState
 			_grpHackers.add(new Hacker(x + 4, y, Std.parseInt(entityData.get("etype")), _counterHacker));
 			_counterHacker++;
 		}
+		else if (entityName == "pnj")
+		{
+			_grpPnj.add(new PNJ(x + 4, y, _counterPnj));
+			_counterPnj++;
+		}
 
 	}
 
@@ -167,6 +178,9 @@ class PlayState extends FlxState
 		FlxG.collide(_player, _mWalls);
 		FlxG.overlap(_player, _exit, playerExit);
 		
+		//PNJ
+		FlxG.collide(_grpPnj, _mWalls);
+		FlxG.collide(_grpPnj, _grpPnj);
 		
 		//FlxG.collide(_player, _grpHackers); //
 		FlxG.collide(_grpHackers, _grpHackers);
