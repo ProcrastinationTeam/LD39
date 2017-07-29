@@ -62,5 +62,9 @@
   <entities>
     <exit id="0" x="592" y="0" />
     <player id="2" x="48" y="416" />
+    <hacker id="1" x="16" y="192" etype="1" />
+    <hacker id="3" x="80" y="224" etype="1" />
+    <hacker id="4" x="176" y="224" etype="1" />
+    <hacker id="5" x="224" y="128" etype="1" />
   </entities>
 </level>
