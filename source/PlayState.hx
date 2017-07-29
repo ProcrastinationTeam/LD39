@@ -10,6 +10,7 @@ import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
+import flixel.FlxCamera;
 
 class PlayState extends FlxState
 {
@@ -22,11 +23,12 @@ class PlayState extends FlxState
 	private var _isOut: Bool;
 
 	private var _volume					: Float = 50;
-
-	private var _initialRemainingTime 	: Float = 60;
-	private var _currentRemainingTime 	: Float = 60;
 	
 	private var _hud 					: HUD;
+	
+	private var _isInCallWithMom		: Bool = false;
+	
+	private var _showWifi 				: Bool = false;
 
 	override public function create():Void
 	{
@@ -65,17 +67,18 @@ class PlayState extends FlxState
 
 		_map.loadEntities(placeEntities, "entities");
 
-		FlxG.camera.follow(_player, TOPDOWN, 1);
+		// Baisser la deadzone de la caméra si la caméra suit pas assez
+		FlxG.camera.follow(_player, TOPDOWN_TIGHT, 1);
 
-		_battery = new Battery(50, 1);
+		_battery = new Battery(FlxG.random.float(40, 60), 0.25);
 		add(_battery);
 
-		FlxG.camera.zoom = 2;
+		FlxG.camera.zoom = 3;
 		
 		_hud = new HUD();
 		add(_hud);
 		
-		var hudCam = new FlxCamera(0, 0, 50, 300, 1);
+		var hudCam = new FlxCamera(0, 0, 64, 316, 1);
 		FlxG.cameras.add(hudCam);
 		
 		super.create();
@@ -101,26 +104,36 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
-		_currentRemainingTime -= elapsed;
-
 		FlxG.collide(_player, _mWalls);
 		FlxG.overlap(_player, _exit, playerExit);
 		
-		var vol:Int = Math.round(_battery._batteryValue);
-		_hud.updateHUD(vol);
+		var batteryLevel:Int = Math.round(_battery._batteryLevel);
+		_hud.updateHUD(batteryLevel);
 		
-		_battery._batteryValue += FlxG.mouse.wheel;
+		_battery._batteryLevel += FlxG.mouse.wheel;
 		
 		if (FlxG.keys.justPressed.C)
 		{
-			_battery._isCallingMom = !_battery._isCallingMom;
+			_battery._isInCallWithMom = !_battery._isInCallWithMom;
+			_isInCallWithMom = !_isInCallWithMom;
+			
+			if (_isInCallWithMom) {
+				_hud.startCall();
+			} else {
+				_hud.endCall();
+			}
 		}
 		if (FlxG.keys.justPressed.V)
 		{
 			_battery.punctualDecreaseBattery(FlxG.random.float(2, 5));
 		}
+		if (FlxG.keys.justPressed.W)
+		{
+			_showWifi = !_showWifi;
+			_hud.showWifi(_showWifi);
+		}
 
-		if (_battery._batteryValue <= 0 || _currentRemainingTime <= 0)
+		if (_battery._batteryLevel <= 0)
 		{
 			// GAMEOVER
 			gameOver(false);
