@@ -3,50 +3,77 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.ui.FlxBar;
+import flixel.util.FlxAxes;
 
 using flixel.util.FlxSpriteUtil;
 
 class HUD extends FlxTypedGroup<FlxSprite>
 {
-	//private var _sprBack:FlxSprite;
-	//private var _txtHealth:FlxText;
-	//private var _txtMoney:FlxText;
-	//private var _sprHealth:FlxSprite;
-	//private var _sprMoney:FlxSprite;
+	private var _batteryBar					: FlxBar;
+	private var _batteryText 				: FlxText;
 	
-	private var _barVolume				: FlxBar;
+	private var _sprBack					: FlxSprite;
+	
+	private var _wifiIcon					: FlxSprite;
+	private var _callingIcon				: FlxSprite;
 
 	public function new() {
 		super();
-		//_sprBack = new FlxSprite().makeGraphic(FlxG.width, 20, FlxColor.BLACK);
-		//_sprBack.drawRect(0, 19, FlxG.width, 1, FlxColor.WHITE);
-		//_txtHealth = new FlxText(16, 2, 0, "3 / 3", 8);
-		//_txtHealth.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
-		//_txtMoney = new FlxText(0, 2, 0, "0", 8);
-		//_txtMoney.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
-		//_sprHealth = new FlxSprite(4, _txtHealth.y + (_txtHealth.height/2)  - 4, AssetPaths.health__png);
-		//_sprMoney = new FlxSprite(FlxG.width - 12, _txtMoney.y + (_txtMoney.height/2)  - 4, AssetPaths.coin__png);
-		//_txtMoney.alignment = RIGHT;
-		//_txtMoney.x = _sprMoney.x - _txtMoney.width - 4;
-		//add(_sprBack);
-		//add(_sprHealth);
-		//add(_sprMoney);
-		//add(_txtHealth);
-		//add(_txtMoney);
 		
-		_barVolume = new FlxBar(FlxG.camera.x, FlxG.camera.y, BOTTOM_TO_TOP, 50, 300);
-		_barVolume.createFilledBar(0xff464646, FlxColor.WHITE, true, FlxColor.WHITE);
-		_barVolume.scrollFactor.set(0, 0);
-		add(_barVolume);
+		_sprBack = new FlxSprite().makeGraphic(64, 16, FlxColor.BLACK);
+		_sprBack.x = 0;
+		_sprBack.y = 0;
+		//_sprBack.drawRect(0, 0, FlxG.width, 50, FlxColor.WHITE);
+		add(_sprBack);
 		
-		forEach(function(spr:FlxSprite) {
-			spr.scrollFactor.set(0, 0);
+		_wifiIcon = new FlxSprite().loadGraphic(AssetPaths.wifi__png, true, 16, 16);
+		_wifiIcon.x = 0;
+		_wifiIcon.y = 0;
+		_wifiIcon.visible = false;
+		add(_wifiIcon);
+		
+		_callingIcon = new FlxSprite().loadGraphic(AssetPaths.call_icon__png, true, 16, 16);
+		_callingIcon.x = 16;
+		_callingIcon.y = 0;
+		_callingIcon.visible = false;
+		add(_callingIcon);
+		
+		_batteryBar = new FlxBar(0, 16, BOTTOM_TO_TOP, 64, 300);
+		_batteryBar.createGradientFilledBar([FlxColor.BLUE, FlxColor.PURPLE, FlxColor.RED], 14, 90, true, FlxColor.BLACK);
+		add(_batteryBar);
+		
+		_batteryText = new FlxText(8, 285);
+		_batteryText.color = 0xFFFFFF;
+		_batteryText.size = 18;
+		_batteryText.setSize(64, 30);
+		_batteryText.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
+		add(_batteryText);
+		
+		forEach(function(sprite:FlxSprite) {
+			sprite.scrollFactor.set(0, 0);
 		});
 	}
 
 	public function updateHUD(BatteryValue:Float):Void {
-		_barVolume.value = BatteryValue;
+		var vol:Int = Math.round(BatteryValue);
+		_batteryBar.value = vol;
+		_batteryText.text = vol + "%";
+	}
+	
+	public function startCall():Void {
+		_callingIcon.visible = true;
+		_callingIcon.flicker(0, 0.6);
+	} 
+	
+	public function endCall():Void {
+		_callingIcon.stopFlickering();
+		_callingIcon.visible = false;
+	}
+	
+	public function showWifi(ShowWifi:Bool):Void {
+		_wifiIcon.visible = ShowWifi;
 	}
 }

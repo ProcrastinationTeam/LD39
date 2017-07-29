@@ -6,21 +6,28 @@ import flixel.FlxG;
 
 class Battery extends FlxSprite
 {
-	public var _batteryValue:Float;
-	public var _batteryDecreaseRatePerSecond:Float;
+	public static var instance(default, null): Battery = new Battery();
+	
+	public var _batteryLevel							: Float = 50;
+	public var _batteryDecreaseRatePerSecond			: Float = 0.25;
 
 	// Si on est entrain de parler avec maman, ça pompe la batterie
-	public var _isCallingMom:Bool = false;
-	public var _batteryDecreaseRatePerSecondThroughCall:Float = 0.5;
+	public var _isInCallWithMom							: Bool = false;
+	public var _batteryDecreaseRatePerSecondThroughCall	: Float = 0.5;
+	
+	// Pompage de batterie / hacker / seconde
+	private var _numberOfHackersHacking 					: Int = 0;
+	private var _batteryDecreaseRatePerSecondPerHacker		: Float = 0.2;
 
-	public function new(InitialBatteryValue:Float, BatteryDecreaseRatePerSecond:Float)
+	private function new()
 	{
 		super();
-
-		loadGraphic(AssetPaths.player__png, true, 16, 16);
-
-		_batteryValue = InitialBatteryValue;
+	}
+	
+	public function initBattery(InitialBatteryValue:Float, BatteryDecreaseRatePerSecond:Float):Void
+	{
 		_batteryDecreaseRatePerSecond = BatteryDecreaseRatePerSecond;
+		_batteryLevel = InitialBatteryValue;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -28,22 +35,23 @@ class Battery extends FlxSprite
 		super.update(elapsed);
 		//
 
-		if (_isCallingMom)
+		// La batterie diminue toute seule par défaut
+		_batteryLevel -= _batteryDecreaseRatePerSecond * elapsed;
+		
+		// Si on est en call avec maman, la batterie descend
+		if (_isInCallWithMom)
 		{
-			_batteryValue -= _batteryDecreaseRatePerSecond * elapsed;
+			_batteryLevel -= _batteryDecreaseRatePerSecondThroughCall * elapsed;
 		}
+		
+		// Si on se fait hack, la batterie se fait voler
+		_batteryLevel -= _numberOfHackersHacking * _batteryDecreaseRatePerSecondPerHacker * elapsed;
 	}
 
 	// Quand on se fait pomper de la batterie de façon ponctuelle, ça screenshake un coup
 	public function punctualDecreaseBattery(value:Float):Void
 	{
-		_batteryValue -= value;
-		FlxG.camera.shake(0.005, 0.2);
-	}
-
-	// Mettre à jour le sprite de la batterie
-	public function updateBatterySprite():Void
-	{
-
+		_batteryLevel -= value;
+		FlxG.cameras.list[1].shake(0.005, 0.2);
 	}
 }
