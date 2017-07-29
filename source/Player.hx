@@ -30,8 +30,6 @@ class Player extends FlxSprite
 
 		setSize(8, 14);
 		offset.set(4, 2);
-
-		_sndStep = FlxG.sound.load(AssetPaths.step__wav);
 	}
 
 	override public function update(elapsed:Float):Void
