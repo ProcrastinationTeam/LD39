@@ -1,9 +1,5 @@
 package;
 
-/**
- * ...
- * @author ElRyoGrande
- */
 class FSM
 {
 	public var activeState:Void->Void;

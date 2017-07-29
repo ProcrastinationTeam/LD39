@@ -3,15 +3,9 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVelocity;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 
-/**
- * ...
- * @author ElRyoGrande
- */
 class Hacker extends FlxSprite
 {
 
@@ -23,8 +17,8 @@ class Hacker extends FlxSprite
 	private var _brain:FSM;
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
-	public var seesPlayer:Bool = false;
-	public var playerPos(default, null):FlxPoint;
+	public var _seesPlayer:Bool = false;
+	public var _playerPosition(default, null):FlxPoint;
 
 	public var _isInRangeForHack : Bool = false;
 	public var _life : Int;
@@ -55,7 +49,7 @@ class Hacker extends FlxSprite
 		//IA SECTION
 		_brain = new FSM(idle);
 		_idleTmr = 0;
-		playerPos = FlxPoint.get();
+		_playerPosition = FlxPoint.get();
 
 		//TWEAK VALUE
 		_life = 2;
@@ -133,7 +127,7 @@ class Hacker extends FlxSprite
 	{
 		animation.play("idle");
 		
-		if (seesPlayer && _isOffensive)
+		if (_seesPlayer && _isOffensive)
 		{
 			_brain.activeState = chase;
 		}
@@ -162,7 +156,7 @@ class Hacker extends FlxSprite
 	public function chase():Void
 	{
 
-		if (!seesPlayer)
+		if (!_seesPlayer)
 		{
 			//Modification du Idle probable
 			_brain.activeState = idle;
@@ -172,7 +166,7 @@ class Hacker extends FlxSprite
 			//VALUE TO TWEAK
 			if (distance > 50)
 			{
-				FlxVelocity.moveTowardsPoint(this, playerPos, Std.int(speed));
+				FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(speed));
 				if (_isInRangeForHack)
 				{
 					Battery.instance._numberOfHackersHacking--;

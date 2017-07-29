@@ -8,43 +8,45 @@ import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import flixel.tile.FlxTilemap;
-import flixel.ui.FlxBar;
-import flixel.util.FlxColor;
-import flixel.FlxCamera;
 import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
 {
-	private var _map 					: FlxOgmoLoader;
-	private var _mWalls 				: FlxTilemap;
-	private var _player 				: Player;
-	private var _battery				: Battery;
+	private var _map 								: FlxOgmoLoader;
+	private var _walls 								: FlxTilemap;
+	private var _player 							: Player;
+	private var _battery							: Battery;
 
-	private var _exit : FlxSprite;
-	private var _isOut: Bool;
+	private var _exit 								: FlxSprite;
 
-	private var _volume					: Float = 50;
-	private var _hud 					: HUD;
+	private var _hud 								: HUD;
 
-	private var _isInCallWithMom		: Bool = false;
+	// Variables pour le call de maman
+	private var _callWithMomDuration				: Float = 3;
+	private var _minDelayBetweenTwoCalls			: Float = 4;
+	private var _durationBetweenCallScreenShakes	: Float = 0.5;
 
-	private var _showWifi 				: Bool = false;
+	private var _isInCallWithMom					: Bool = false;
+	private var _lastCallWithMomDelay				: Float = 0;
 
-	//Enemy variables
-	private var _grpHackers				:FlxTypedGroup<Hacker>;
-	private var _grpPnj					:FlxTypedGroup<PNJ>;
+	// TODO: ajouter une mécanique de décrochage ?
+	//private var _momIsCalling						: Bool = false;
 
-	//Debug variable
-	private var _counterHacker 			:Int = 0;
-	private var _counterPnj				:Int = 0;
+	// Enemy variables
+	private var _hackers							: FlxTypedGroup<Hacker>;
+	private var _npcs								: FlxTypedGroup<PNJ>;
+
+	// Debug variable
+	private var _counterHacker 						: Int = 0;
+	private var _counterPnj							: Int = 0;
+
+	private var _showWifi 							: Bool = false;
 
 	override public function create():Void
 	{
-		
-		_isOut = false;
+		// Pas besoin de la souris pour le jeu (pour le moment en tout cas) donc on la cache
+		FlxG.mouse.visible = false;
 
 		_exit = new FlxSprite();
 		_exit.alpha = 0;
@@ -52,71 +54,73 @@ class PlayState extends FlxState
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
-		_mWalls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
-		_mWalls.follow();
-		_mWalls.setTileProperties(1, FlxObject.NONE);
-		_mWalls.setTileProperties(4, FlxObject.NONE);
-		_mWalls.setTileProperties(7, FlxObject.NONE);
-		_mWalls.setTileProperties(37, FlxObject.NONE);
-		_mWalls.setTileProperties(38, FlxObject.NONE);
-		_mWalls.setTileProperties(39, FlxObject.NONE);
-		_mWalls.setTileProperties(40, FlxObject.NONE);
-		_mWalls.setTileProperties(41, FlxObject.NONE);
-		_mWalls.setTileProperties(42, FlxObject.NONE);
-		_mWalls.setTileProperties(43, FlxObject.NONE);
-		_mWalls.setTileProperties(44, FlxObject.NONE);
+		_walls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
+		_walls.follow();
+		_walls.setTileProperties(1, FlxObject.NONE);
+		_walls.setTileProperties(4, FlxObject.NONE);
+		_walls.setTileProperties(7, FlxObject.NONE);
+		_walls.setTileProperties(37, FlxObject.NONE);
+		_walls.setTileProperties(38, FlxObject.NONE);
+		_walls.setTileProperties(39, FlxObject.NONE);
+		_walls.setTileProperties(40, FlxObject.NONE);
+		_walls.setTileProperties(41, FlxObject.NONE);
+		_walls.setTileProperties(42, FlxObject.NONE);
+		_walls.setTileProperties(43, FlxObject.NONE);
+		_walls.setTileProperties(44, FlxObject.NONE);
 
-		_mWalls.setTileProperties(45, FlxObject.ANY);
-		_mWalls.setTileProperties(46, FlxObject.ANY);
-		_mWalls.setTileProperties(48, FlxObject.ANY);
-		_mWalls.setTileProperties(10, FlxObject.ANY);
-		_mWalls.setTileProperties(9, FlxObject.ANY);
-		_mWalls.setTileProperties(75, FlxObject.ANY);
-		_mWalls.setTileProperties(76, FlxObject.ANY);
-		_mWalls.setTileProperties(77, FlxObject.ANY);
-		add(_mWalls);
+		_walls.setTileProperties(45, FlxObject.ANY);
+		_walls.setTileProperties(46, FlxObject.ANY);
+		_walls.setTileProperties(48, FlxObject.ANY);
+		_walls.setTileProperties(10, FlxObject.ANY);
+		_walls.setTileProperties(9, FlxObject.ANY);
+		_walls.setTileProperties(75, FlxObject.ANY);
+		_walls.setTileProperties(76, FlxObject.ANY);
+		_walls.setTileProperties(77, FlxObject.ANY);
+		add(_walls);
 
 		_player = new Player();
 		add(_player);
 
-		//HackerSpawn
-		_grpHackers = new FlxTypedGroup<Hacker>();
-		add(_grpHackers);
-		
-		//PNJ spawn
-		_grpPnj = new FlxTypedGroup<PNJ>();
-		add(_grpPnj);
+		_hackers = new FlxTypedGroup<Hacker>();
+		add(_hackers);
 
+		_npcs = new FlxTypedGroup<PNJ>();
+		add(_npcs);
+
+		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
 
-		// Baisser la deadzone de la caméra si la caméra suit pas assez
-		FlxG.camera.follow(_player, LOCKON, 1);
-		// TODO 
-		//FlxG.camera.deadzone
-
 		_battery = Battery.instance;
+		// TODO: Fixer des valeurs, et les sortir d'ici
+		_battery.initBattery(FlxG.random.float(40, 60), 0.3);
+		// Même si elle n'a pas de sprite à afficher, il faut l'ajouter au state sinon ça fonctionne pas (le update se lance pas ?)
 		add(_battery);
 
-		_battery.initBattery(FlxG.random.float(40, 60), 0.3);
-
+		// TODO: Baisser la deadzone de la caméra si la caméra suit pas assez
+		FlxG.camera.follow(_player, LOCKON, 1);
 		FlxG.camera.zoom = 4;
 
-		_hud = new HUD();
-		add(_hud);
-
+		// Caméra pour le HUD (on sait pas trop comment, mais ça marche)
 		var hudCam = new FlxCamera(0, 0, 64, 480, 1);
-
 		FlxG.cameras.add(hudCam);
 
-		//ZONE DE DEBUG
-		FlxG.watch.add(Battery.instance, "_numberOfHackersHacking" );
-		///////////
-		
-		FlxG.mouse.visible = false;
-		
+		// HUD (partie gauche)
+		_hud = new HUD(_player);
+		add(_hud);
+
+		// ZONE DE DEBUG
+		FlxG.watch.add(_battery, "_numberOfHackersHacking" );
+		// FIN DE ZONE DE DEBUG
+
 		super.create();
 	}
 
+	/**
+	 * Fonction de spawn des entités de la map
+	 *
+	 * @param	entityName
+	 * @param	entityData
+	 */
 	private function placeEntities(entityName:String, entityData:Xml):Void
 	{
 		var x:Int = Std.parseInt(entityData.get("x"));
@@ -133,147 +137,237 @@ class PlayState extends FlxState
 		}
 		else if (entityName == "hacker")
 		{
-			_grpHackers.add(new Hacker(x + 4, y, Std.parseInt(entityData.get("etype")), _counterHacker));
+			_hackers.add(new Hacker(x + 4, y, Std.parseInt(entityData.get("etype")), _counterHacker));
 			_counterHacker++;
 		}
 		else if (entityName == "pnj")
 		{
-			_grpPnj.add(new PNJ(x + 4, y, _counterPnj));
+			_npcs.add(new PNJ(x + 4, y, _counterPnj));
 			_counterPnj++;
 		}
-
 	}
 
-	//Methode a migrer dans l'ideal 
-	private function checkEnemyVision(e:Hacker):Void
+	/**
+	 * Check si un hacker voit le joueur
+	 *
+	 * @param	hacker
+	 */
+	private function checkEnemyVision(hacker:Hacker):Void
 	{
-		e.distance = FlxMath.distanceBetween(_player, e);
-		FlxG.watch.add(e, "distance", "Distance between me and hacker " + e.id +": ");
+		hacker.distance = FlxMath.distanceBetween(_player, hacker);
+		FlxG.watch.add(hacker, "distance", "Distance between me and hacker " + hacker.id +" : ");
 
-		if (_mWalls.ray(e.getMidpoint(), _player.getMidpoint()) && e.distance < 75)
+		if (_walls.ray(hacker.getMidpoint(), _player.getMidpoint()) && hacker.distance < 75)
 		{
-			e.seesPlayer = true;
-			e.playerPos.copyFrom(_player.getMidpoint());
-			
+			hacker._seesPlayer = true;
+			hacker._playerPosition.copyFrom(_player.getMidpoint());
 		}
-		else
-			e.seesPlayer = false;
+		else {
+			hacker._seesPlayer = false;
+		}
 	}
-	
-	/*private function checkRangeForHack(e:Hacker):Void
-	{
-	
-		if (e.isInRangeForHack == true)
-		{
-			_battery._numberOfHackersHacking++;
-		}
-		
-	}*/
-	
+
+	/**
+	 * Check si un hacker est à portée pour hacker le joueur
+	 *
+	 * @param	hacker
+	 */
+	//private function checkRangeForHack(hacker:Hacker):Void
+	//{
+	//	if (hacker._isInRangeForHack)
+	//	{
+	//		_battery._numberOfHackersHacking++;
+	//	}
+	//}
+
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 
-		//COLLISION SECTION
-		FlxG.collide(_player, _mWalls);
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////// Reformater
+		// COLLISION SECTION
+		FlxG.collide(_player, _walls);
 		FlxG.overlap(_player, _exit, playerExit);
-		
-		//PNJ
-		FlxG.collide(_grpPnj, _mWalls);
-		FlxG.collide(_grpPnj, _grpPnj);
-		
+
+		// PNJ
+		FlxG.collide(_npcs, _walls);
+		FlxG.collide(_npcs, _npcs);
+
 		//FlxG.collide(_player, _grpHackers); //
-		FlxG.collide(_grpHackers, _grpHackers);
-		FlxG.collide(_grpHackers, _mWalls);
+		FlxG.collide(_hackers, _hackers);
+		FlxG.collide(_hackers, _walls);
 
 		//Action applique a un groupe d'entité
-		_grpHackers.forEachAlive(checkEnemyVision);
+		_hackers.forEachAlive(checkEnemyVision);
 		//_grpHackers.forEachAlive(checkRangeForHack);
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		//BATTERY SECTION
-		var batteryLevel:Int = Math.round(_battery._batteryLevel);
-		_hud.updateHUD(batteryLevel, _player._currentStamina, _player._currentPushCooldown);
-
-		_battery._batteryLevel += FlxG.mouse.wheel;
-		
-		if (FlxG.keys.pressed.X && _player._canPush) {
-			_grpHackers.forEachAlive(tryToPush);
-		}
-		
-		//DEBUG FUNCTION SECTION
-		if (FlxG.keys.justPressed.C)
+		// SECTION GESTION DE LA BATTERIE
+		if (_isInCallWithMom)
 		{
-			_battery._isInCallWithMom = !_battery._isInCallWithMom;
-			_isInCallWithMom = !_isInCallWithMom;
+			_battery._batteryLevel -= _battery._batteryDecreaseRatePerSecondThroughCall * elapsed;
+		}
 
+		var batteryLevel:Int = Math.round(_battery._batteryLevel);
+
+		// BULLY SECTION
+		if (FlxG.keys.pressed.X && _player._canBully)
+		{
+			_hackers.forEachAlive(TryToBully);
+		}
+
+		// MAMAN APPELLE SECTION
+		if (!_isInCallWithMom && _lastCallWithMomDelay > _callWithMomDuration + _minDelayBetweenTwoCalls)
+		{
+			_isInCallWithMom = FlxG.random.float() > 0.99;
 			if (_isInCallWithMom)
 			{
+				_lastCallWithMomDelay = 0;
+				FlxG.camera.shake(0.005, 0.1);
 				_hud.startCall();
-			}
-			else
-			{
-				_hud.endCall();
+				new FlxTimer().start(_callWithMomDuration, CallWithMomEndend);
+				new FlxTimer().start(_durationBetweenCallScreenShakes, CallScreenShake, Std.int(_callWithMomDuration));
 			}
 		}
-		if (FlxG.keys.justPressed.V)
-		{
-			_battery.punctualDecreaseBattery(FlxG.random.float(2, 5));
-		}
-		if (FlxG.keys.justPressed.W)
-		{
-			_showWifi = !_showWifi;
-			_hud.showWifi(_showWifi);
-		}
-		if (FlxG.keys.justPressed.B)
-		{
-			_grpHackers.forEachAlive(bullied);
-		}
-		//DEBUG FUNCTION SECTION
 
+		_lastCallWithMomDelay += elapsed;
+
+		/////////////////////////////////////////////////////////////////////// SECTION DEBUG
+		// Il faut obligatoirement avoir SHIFT d'enfoncer pour utiliser ces fonctions de debug
+		if (FlxG.keys.pressed.SHIFT)
+		{
+			// Contrôle du niveau de la batterie avec la molette
+			_battery._batteryLevel += FlxG.mouse.wheel;
+
+			// Test call avec maman
+			if (FlxG.keys.justPressed.C)
+			{
+				_isInCallWithMom = !_isInCallWithMom;
+
+				if (_isInCallWithMom)
+				{
+					_hud.startCall();
+				}
+				else
+				{
+					_hud.endCall();
+				}
+			}
+
+			// Test niquage ponctuel de batterie
+			if (FlxG.keys.justPressed.V)
+			{
+				_battery.punctualDecreaseBattery(FlxG.random.float(2, 5));
+			}
+
+			// Test bullying sans vergogne
+			if (FlxG.keys.justPressed.B)
+			{
+				_hackers.forEachAlive(TryToBullyFreely);
+			}
+		}
+		////////////////////////////////////////////////// FIN SECTION DEBUG
+
+		// Si la batterie atteint les 0%, c'est un game over
 		if (_battery._batteryLevel <= 0)
 		{
-			// GAMEOVER
 			gameOver(false);
 		}
 	}
-	
-	private function AfterPushTimer(Timer:FlxTimer):Void {
-		_player._canPush  = true;
-		_player._currentPushCooldown = 0;
+
+	/**
+	 * Fonction de debug (bully sans cout)
+	 *
+	 * @param	hacker
+	 */
+	private function TryToBullyFreely(hacker:Hacker):Void
+	{
+		if (FlxMath.distanceBetween(_player, hacker) < _player._minDistanceToBully)
+		{
+			hacker.getBullied();
+		}
 	}
 
-	private function bullied(h:Hacker):Void
+	/**
+	 * Essaye de bully un hacker
+	 *
+	 * @param	hacker
+	 */
+	private function TryToBully(hacker:Hacker):Void
 	{
-		//VALEUR A TWEAK
-		if (FlxMath.distanceBetween(_player, h) < 15)
+		// TODO: faire une autre fonction pour bully aussi les pnj et les punks à chien
+		if (FlxMath.distanceBetween(_player, hacker) < _player._minDistanceToBully)
 		{
-			h.getBullied();
+			hacker.getBullied();
+			_player._canBully = false;
+			_player._currentStamina -= _player._bullyingCost;
+			_player._currentBullyCooldown = _player._bullyingDelay;
+			new FlxTimer().start(_player._bullyingDelay, AfterBullyTimer);
 		}
 	}
-	
-	private function tryToPush(h:Hacker):Void
+
+	// CALLBACKS
+	/**
+	 * Fonction appellée à la fin du timer de bully
+	 * On peut de nouveau bully et on reset le cooldown
+	 *
+	 * @param	Timer
+	 */
+	private function AfterBullyTimer(Timer:FlxTimer):Void
 	{
-		//VALEUR A TWEAK
-		if (FlxMath.distanceBetween(_player, h) < 15)
-		{
-			h.getBullied();
-			_player._canPush = false;
-			_player._currentStamina -= _player._pushCost;
-			_player._currentPushCooldown = _player._pushDelay;
-			new FlxTimer().start(_player._pushDelay, AfterPushTimer);
-		}
+		_player._canBully = true;
+		_player._currentBullyCooldown = 0;
 	}
-	
-	private function playerExit(P:Player, C:FlxSprite):Void
+
+	/**
+	 * Fonction appellée à la fin du timer de call avec maman
+	 * On met à jour le hud pour arrêter de faire clignoter l'icone
+	 *
+	 * @param	Timer
+	 */
+	private function CallWithMomEndend(Timer:FlxTimer):Void
 	{
-		if (P.alive && P.exists)
+		_isInCallWithMom = false;
+		_hud.endCall();
+	}
+
+	/**
+	 * Fonction appelée toutes les X secondes pendant l'appel
+	 * Fais un petit screenshake pour rappeler qu'on est en call
+	 *
+	 * @param	Timer
+	 */
+	private function CallScreenShake(Timer:FlxTimer):Void
+	{
+		// TODO: même qu'au lancement ?
+		// TODO: ajouter un effet sonore ? ou pendant tout le call ?
+		FlxG.camera.shake(0.005, 0.1);
+	}
+
+	/**
+	 * Indique que le joueur est arrivé à la sortie du niveau !
+	 * @param	player
+	 * @param	sprite
+	 */
+	private function playerExit(player:Player, sprite:FlxSprite):Void
+	{
+		if (player.alive && player.exists)
 		{
 			gameOver(true);
 		}
 	}
 
+	/**
+	 * Switch vers le state game over en indiquant si le joueur a gagné
+	 *
+	 * @param	won
+	 */
 	public function gameOver(won:Bool):Void
 	{
+		// TODO: gérer le multi niveaux
 		FlxG.switchState(new GameOverState(won));
 	}
 }

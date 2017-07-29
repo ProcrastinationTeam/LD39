@@ -9,24 +9,30 @@ import flixel.util.FlxTimer;
 
 class Player extends FlxSprite
 {
-	public var speed								: Float = 150;
-	public var _sndStep								: FlxSound;
-	
-	public var _maxStamina							: Float = 2;
+	// Sprint + stamina (tweakable)
+	public var _walkingSpeed						: Float = 150;
 	public var _sprintMultiplier					: Float = 1.5;
+	public var _maxStamina							: Float = 2;
 	public var _staminaRecoveryPerSecond			: Float = 1;
 	public var _staminaSprintConsumptionPerSecond	: Float = 1;
 	public var _delayAfterEmptyStamina 				: Float;
 	
-	public var _pushCost							: Float = 0.5;
-	public var _pushDelay							: Float = 0.5;
-	
+	// Sprint + stamina (non tweakable)
 	public var _currentStamina						: Float;
 	public var _isSprinting							: Bool = false;
 	public var _canSprint							: Bool = true;
 
-	public var _canPush								: Bool = true;
-	public var _currentPushCooldown 				: Float;
+	// Bullying (tweakable)
+	public var _minDistanceToBully 					: Int = 15;
+	public var _bullyingCost						: Float = 0.5;
+	public var _bullyingDelay						: Float = 0.5;
+	
+	// Bullying (non tweakable)
+	public var _canBully							: Bool = true;
+	public var _currentBullyCooldown 				: Float;
+	
+	// Polishing
+	public var _stepSound							: FlxSound;
 	
 	public function new(?X:Float=0, ?Y:Float=0)
 	{
@@ -48,7 +54,7 @@ class Player extends FlxSprite
 		_delayAfterEmptyStamina = _staminaRecoveryPerSecond * _maxStamina;
 		_currentStamina = _maxStamina;
 		
-		_currentPushCooldown = 0;
+		_currentBullyCooldown = 0;
 		
 		FlxG.watch.add(this, "_currentStamina");
 		FlxG.watch.add(this, "_isSprinting");
@@ -56,7 +62,10 @@ class Player extends FlxSprite
 
 	override public function update(elapsed:Float):Void
 	{
+		// Gestion du mouvement
 		movement();
+		
+		// Gestion de la jauge de stamina (sprint)
 		if (_isSprinting) {
 			_currentStamina -= elapsed * _staminaSprintConsumptionPerSecond;
 		} else {
@@ -65,13 +74,16 @@ class Player extends FlxSprite
 				_currentStamina = _maxStamina;
 			}
 		}
+		
+		// A bout de souffle, peut plus sprinter
 		if (_currentStamina <= 0 && _canSprint) {
 			_canSprint = false;
 			new FlxTimer().start(_delayAfterEmptyStamina, StaminaRecoveryFinished);
 		}
 		
-		if (_currentPushCooldown > 0) {
-			_currentPushCooldown -= elapsed;
+		// Update du cooldown du bullying
+		if (_currentBullyCooldown > 0) {
+			_currentBullyCooldown -= elapsed;
 		}
 		
 		super.update(elapsed);
@@ -82,6 +94,9 @@ class Player extends FlxSprite
 		_currentStamina = _maxStamina;
 	}
 	
+	/**
+	 * Gestion des mouvements et sprint
+	 */
 	private function movement():Void
 	{
 		var _up:Bool = false;
@@ -113,20 +128,24 @@ class Player extends FlxSprite
 			if (_up)
 			{
 				_ma = -90;
-				if (_left)
+				if (_left) {
 					_ma -= 45;
-				else if (_right)
+				}
+				else if (_right) {
 					_ma += 45;
+				}
 
 				facing = FlxObject.UP;
 			}
 			else if (_down)
 			{
 				_ma = 90;
-				if (_left)
+				if (_left) {
 					_ma += 45;
-				else if (_right)
+				}
+				else if (_right) {
 					_ma -= 45;
+				}
 
 				facing = FlxObject.DOWN;
 			}
@@ -141,7 +160,7 @@ class Player extends FlxSprite
 				facing = FlxObject.RIGHT;
 			}
 
-			velocity.set((_isSprinting ? speed * _sprintMultiplier : speed), 0);
+			velocity.set((_isSprinting ? _walkingSpeed * _sprintMultiplier : _walkingSpeed), 0);
 			velocity.rotate(FlxPoint.weak(0, 0), _ma);
 
 			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)

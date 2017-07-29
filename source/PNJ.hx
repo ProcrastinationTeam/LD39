@@ -6,14 +6,9 @@ import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 
-/**
- * ...
- * @author ElRyoGrande
- */
 class PNJ extends FlxSprite 
 {
 	public var speed:Float = 140;
-	public var etype(default, null):Int;
 	public var id : Int;
 
 	//IA variables
@@ -21,15 +16,10 @@ class PNJ extends FlxSprite
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
 
-	
-
-	
-
 	public function new(X:Float=0, Y:Float=0, Id : Int)
 	{
 		super(X, Y);
 		id = Id;
-		
 
 		//remplacer le EType par un random
 		loadGraphic("assets/images/pnj-1.png", true, 16, 16);
@@ -47,14 +37,9 @@ class PNJ extends FlxSprite
 		//IA SECTION
 		_brain = new FSM(idle);
 		_idleTmr = 0;
-		//splayerPos = FlxPoint.get();
 
-		//TWEAK VALUE
-		//_life = 2;
-		
 		//DEBUG SECTION
-		FlxG.watch.add(this, "_life", "Player " + this.id + " :");
-		
+		//FlxG.watch.add(this, "_life", "Player " + this.id + " :");
 	}
 	
 	override public function draw():Void
@@ -63,17 +48,21 @@ class PNJ extends FlxSprite
 		{
 			if (Math.abs(velocity.x) > Math.abs(velocity.y))
 			{
-				if (velocity.x < 0)
+				if (velocity.x < 0) {
 					facing = FlxObject.LEFT;
-				else
+				}
+				else {
 					facing = FlxObject.RIGHT;
+				}
 			}
 			else
 			{
-				if (velocity.y < 0)
+				if (velocity.y < 0) {
 					facing = FlxObject.UP;
-				else
+				}
+				else {
 					facing = FlxObject.DOWN;
+				}
 			}
 
 			//PAS D'ANIMATION ACTUELLEMENT
@@ -81,10 +70,10 @@ class PNJ extends FlxSprite
 			//{
 			//case FlxObject.LEFT, FlxObject.RIGHT:
 			//// animation.play("lr");
-//
+			//
 			//case FlxObject.UP:
 			//animation.play("u");
-//
+			//
 			//case FlxObject.DOWN:
 			//animation.play("d");
 			//}
@@ -110,19 +99,16 @@ class PNJ extends FlxSprite
 
 				velocity.set(speed * 0.5, 0);
 				velocity.rotate(FlxPoint.weak(), _moveDir);
-
 			}
 			_idleTmr = FlxG.random.int(1, 4);
 		}
-		else
+		else {
 			_idleTmr -= FlxG.elapsed;
-
+		}
 	}
-	
 
 	override public function update(elapsed:Float):Void
 	{
-		
 		_brain.update();
 		super.update(elapsed);
 	}	
