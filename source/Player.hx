@@ -26,6 +26,7 @@ class Player extends FlxSprite
 	public var _canSprint							: Bool = true;
 
 	public var _canPush								: Bool = true;
+	public var _currentPushCooldown 				: Float;
 	
 	public function new(?X:Float=0, ?Y:Float=0)
 	{
@@ -47,6 +48,8 @@ class Player extends FlxSprite
 		_delayAfterEmptyStamina = _staminaRecoveryPerSecond * _maxStamina;
 		_currentStamina = _maxStamina;
 		
+		_currentPushCooldown = 0;
+		
 		FlxG.watch.add(this, "_currentStamina");
 		FlxG.watch.add(this, "_isSprinting");
 	}
@@ -65,6 +68,10 @@ class Player extends FlxSprite
 		if (_currentStamina <= 0 && _canSprint) {
 			_canSprint = false;
 			new FlxTimer().start(_delayAfterEmptyStamina, StaminaRecoveryFinished);
+		}
+		
+		if (_currentPushCooldown > 0) {
+			_currentPushCooldown -= elapsed;
 		}
 		
 		super.update(elapsed);

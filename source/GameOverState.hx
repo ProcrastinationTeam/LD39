@@ -43,6 +43,8 @@ class GameOverState extends FlxState
 		_credit.screenCenter();
 		_credit.y += 100;
 		add(_credit);
+		
+		FlxG.mouse.visible = true;
 
 		super.create();
 	}

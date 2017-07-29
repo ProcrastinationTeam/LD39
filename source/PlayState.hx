@@ -106,6 +106,8 @@ class PlayState extends FlxState
 		FlxG.watch.add(Battery.instance, "_numberOfHackersHacking" );
 		///////////
 		
+		FlxG.mouse.visible = false;
+		
 		super.create();
 	}
 
@@ -176,7 +178,7 @@ class PlayState extends FlxState
 
 		//BATTERY SECTION
 		var batteryLevel:Int = Math.round(_battery._batteryLevel);
-		_hud.updateHUD(batteryLevel);
+		_hud.updateHUD(batteryLevel, _player._currentStamina, _player._currentPushCooldown);
 
 		_battery._batteryLevel += FlxG.mouse.wheel;
 		
@@ -223,7 +225,7 @@ class PlayState extends FlxState
 	
 	private function AfterPushTimer(Timer:FlxTimer):Void {
 		_player._canPush  = true;
-		_player._currentStamina = _player._maxStamina;
+		_player._currentPushCooldown = 0;
 	}
 
 	private function bullied(h:Hacker):Void
@@ -242,6 +244,8 @@ class PlayState extends FlxState
 		{
 			h.getBullied();
 			_player._canPush = false;
+			_player._currentStamina -= _player._pushCost;
+			_player._currentPushCooldown = _player._pushDelay;
 			new FlxTimer().start(_player._pushDelay, AfterPushTimer);
 		}
 	}

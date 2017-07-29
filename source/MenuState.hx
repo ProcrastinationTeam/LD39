@@ -12,10 +12,9 @@ class MenuState extends FlxState
 	public var _moreCredit : FlxText;
 	public var _startDisplay : FlxText;
 	public var _alphaModifier : Float;
+	
 	override public function create():Void
 	{
-		super.create();
-		
 		_alphaModifier = 0;
 		
 		_titleImage = new FlxSprite(0, 0);
@@ -37,6 +36,9 @@ class MenuState extends FlxState
 		_moreCredit.y = _credit.y + 100;
 		add(_moreCredit);
 		
+		FlxG.mouse.visible = true;
+		
+		super.create();
 	}
 
 	override public function update(elapsed:Float):Void
