@@ -31,7 +31,7 @@ class Player extends FlxSprite
 		setSize(8, 14);
 		offset.set(4, 2);
 
-		_sndStep = FlxG.sound.load(AssetPaths.step__wav);
+		//_sndStep = FlxG.sound.load(AssetPaths.step__wav);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -102,7 +102,7 @@ class Player extends FlxSprite
 
 			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
 			{
-				_sndStep.play();
+				//_sndStep.play();
 				switch (facing)
 				{
 					case FlxObject.LEFT, FlxObject.RIGHT:
