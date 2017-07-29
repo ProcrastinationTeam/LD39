@@ -100,7 +100,6 @@ class Player extends FlxSprite
 
 			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
 			{
-				_sndStep.play();
 				switch (facing)
 				{
 					case FlxObject.LEFT, FlxObject.RIGHT:

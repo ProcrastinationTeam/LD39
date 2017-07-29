@@ -1,0 +1,90 @@
+package;
+
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxState;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+
+class GameOverState extends FlxState
+{
+	public var _titleImage : FlxSprite;
+	public var _credit : FlxText;
+	public var _startDisplay : FlxText;
+	public var _alphaModifier : Float;
+
+	private var _win:Bool;				// if we won or lost
+
+	/**
+	* Called from PlayState, this will set our win and score variables
+	* @param	Win		true if the player beat the boss, false if they died
+	* @param	Score	the number of coins collected
+	*/
+	public function new(Win:Bool)
+	{
+		_win = Win;
+		super();
+	}
+
+	override public function create():Void
+	{
+		_alphaModifier = 0;
+
+		_titleImage = new FlxSprite(0, 0);
+		_titleImage.loadGraphic(AssetPaths.Flixoul__png, false, 64,64);
+		_titleImage.screenCenter();
+		add(_titleImage);
+
+		_startDisplay = new FlxText(0, 0, 0, "Click to go back to main menu", 18, true);
+		_startDisplay.screenCenter();
+		add(_startDisplay);
+
+		_credit = new FlxText(0, 0, 0, (_win ? "Congratulaions ! " : "You suck"), 8, true);
+		_credit.screenCenter();
+		_credit.y += 100;
+		add(_credit);
+
+		super.create();
+	}
+
+	override public function update(elapsed:Float):Void
+	{
+		super.update(elapsed);
+		blink();
+
+		if (FlxG.mouse.justPressed)
+		{
+			//Lance le jeu
+			goMainMenu();
+		}
+
+	}
+	//Fonction fait blinker le titre en modifiant son alpha
+	public function blink()
+	{
+		var currentAlpha : Float;
+
+		if (_startDisplay.alpha == 1 )
+		{
+			_alphaModifier = -0.02;
+		}
+		if (_startDisplay.alpha == 0)
+		{
+			_alphaModifier = 0.02;
+		}
+
+		currentAlpha = _startDisplay.alpha;
+		_startDisplay.alpha = currentAlpha + _alphaModifier;
+	}
+
+	/**
+	* When the user hits the main menu button, it should fade out and then take them back to the MenuState
+	*/
+	private function goMainMenu():Void
+	{
+		FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+		{
+			FlxG.switchState(new MenuState());
+		});
+	}
+}
