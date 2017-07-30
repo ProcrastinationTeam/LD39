@@ -50,6 +50,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		_callingIcon.x = 16;
 		_callingIcon.y = 0;
 		_callingIcon.visible = false;
+		_callingIcon.animation.add("call", [0, 1, 2, 3, 4], 3, true);
 		add(_callingIcon);
 
 		_staminaText = new FlxText(2, 16);
@@ -127,8 +128,9 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	 */
 	public function startCall():Void
 	{
+		//_callingIcon.flicker(0, 0.5);
 		_callingIcon.visible = true;
-		_callingIcon.flicker(0, 0.5);
+		_callingIcon.animation.play("call");
 	}
 
 	/**
@@ -136,7 +138,8 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	 */
 	public function endCall():Void
 	{
-		_callingIcon.stopFlickering();
+		//_callingIcon.stopFlickering();
+		_callingIcon.animation.finish();
 		_callingIcon.visible = false;
 	}
 }

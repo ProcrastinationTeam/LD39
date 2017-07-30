@@ -4,7 +4,9 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.math.FlxVector;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.math.FlxMath;
 
 class PNJ extends FlxSprite 
 {
@@ -111,5 +113,13 @@ class PNJ extends FlxSprite
 	{
 		_brain.update();
 		super.update(elapsed);
-	}	
+	}
+	
+	public function getBullied(player:Player):Void
+	{
+		var vector:FlxVector = new FlxVector(this.x - player.x, this.y - player.y);
+		vector.normalize();
+		var vectorPoint:FlxPoint = new FlxPoint(vector.x * player._bullyForce, vector.y * player._bullyForce);
+		velocity.addPoint(vectorPoint);
+	}
 }

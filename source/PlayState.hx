@@ -228,7 +228,8 @@ class PlayState extends FlxState
 		// BULLY SECTION
 		if (FlxG.keys.pressed.X && _player._canBully)
 		{
-			_hackers.forEachAlive(TryToBully);
+			_hackers.forEachAlive(TryToBullyHacker);
+			_npcs.forEachAlive(TryToBullyNpc);
 		}
 
 		// MAMAN APPELLE SECTION
@@ -299,7 +300,7 @@ class PlayState extends FlxState
 	{
 		if (FlxMath.distanceBetween(_player, hacker) < _player._minDistanceToBully)
 		{
-			hacker.getBullied();
+			hacker.getBullied(_player);
 		}
 	}
 
@@ -308,12 +309,31 @@ class PlayState extends FlxState
 	 *
 	 * @param	hacker
 	 */
-	private function TryToBully(hacker:Hacker):Void
+	private function TryToBullyHacker(hacker:Hacker):Void
 	{
 		// TODO: faire une autre fonction pour bully aussi les pnj et les punks à chien
 		if (FlxMath.distanceBetween(_player, hacker) < _player._minDistanceToBully)
 		{
-			hacker.getBullied();
+			hacker.getBullied(_player);
+			_player._canBully = false;
+			_player._currentStamina -= _player._bullyingCost;
+			_player._currentBullyCooldown = _player._bullyingDelay;
+			new FlxTimer().start(_player._bullyingDelay, AfterBullyTimer);
+		}
+	}
+	
+	
+	/**
+	 * Essaye de bully un pnj
+	 *
+	 * @param	npc
+	 */
+	private function TryToBullyNpc(pnj:PNJ):Void
+	{
+		// TODO: faire une autre fonction pour bully aussi les pnj et les punks à chien
+		if (FlxMath.distanceBetween(_player, pnj) < _player._minDistanceToBully)
+		{
+			pnj.getBullied(_player);
 			_player._canBully = false;
 			_player._currentStamina -= _player._bullyingCost;
 			_player._currentBullyCooldown = _player._bullyingDelay;
