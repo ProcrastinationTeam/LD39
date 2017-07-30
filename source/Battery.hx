@@ -9,6 +9,9 @@ class Battery extends FlxSprite
 	
 	public var _batteryLevel								: Float = 50;
 	public var _batteryDecreaseRatePerSecond				: Float = 0.25;
+	
+	public var _lowBatteryThreshold							: Float = 10;
+	public var _lowBatterySaverMultiplier 					: Float = 0.3;
 
 	// Si on est entrain de parler avec maman, ça pompe la batterie
 	public var _batteryDecreaseRatePerSecondThroughCall		: Float = 0.5;
@@ -34,10 +37,9 @@ class Battery extends FlxSprite
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		//
 
 		// La batterie diminue toute seule par défaut
-		_batteryLevel -= _batteryDecreaseRatePerSecond * elapsed;
+		_batteryLevel -= _batteryDecreaseRatePerSecond * elapsed * (_batteryLevel < _lowBatteryThreshold ? _lowBatterySaverMultiplier : 1);
 		
 		// Si on se fait hack, la batterie se fait voler
 		_batteryLevel -= _numberOfHackersHacking * _batteryDecreaseRatePerSecondPerHacker * elapsed;
