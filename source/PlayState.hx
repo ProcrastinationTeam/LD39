@@ -197,7 +197,7 @@ class PlayState extends FlxState
 		FlxG.collide(_npcs, _npcs);
 
 		// HACKER (ENEMY)
-		FlxG.collide(_hackers, _hackers);
+		FlxG.collide(_hackers, _hackers); // Il semble que suite a un bullied ils se supperposent
 		FlxG.collide(_hackers, _npcs);
 		FlxG.collide(_hackers, _walls);
 		FlxG.collide(_hackers, _foreground);

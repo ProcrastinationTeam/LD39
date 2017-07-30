@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.math.FlxVector;
 import flixel.math.FlxVelocity;
 
 class Hacker extends FlxSprite
@@ -22,7 +23,10 @@ class Hacker extends FlxSprite
 	public var _life : Int;
 	public var _isOffensive : Bool;
 
-	// DEBUG LOG
+	public var _actualSpriteName : String;
+	public var _hackerSpriteName : String = "assets/images/enemy-1.png";
+	
+	//DEBUG LOG
 	public var distance : Int;
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int, Id : Int)
@@ -32,12 +36,14 @@ class Hacker extends FlxSprite
 		etype = EType;
 		_isOffensive = true;
 
-		loadGraphic("assets/images/enemy-" + etype + ".png", true, 16, 16);
-
+		//LOADING SPRITE RANDOM
+		_actualSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
+		loadGraphic(_actualSpriteName, true, 16, 16);
+		animation.add("idle", [0], 6, false);
+		
 		//setFacingFlip(FlxObject.LEFT, false, false);
 		//setFacingFlip(FlxObject.RIGHT, true, false);
-		animation.add("hack", [0, 1, 0], 6, true);
-		animation.add("idle", [0], 6, false);
+		
 		drag.x = drag.y = 10;
 		width = 8;
 		height = 14;
@@ -54,7 +60,7 @@ class Hacker extends FlxSprite
 		
 		//DEBUG SECTION
 		FlxG.watch.add(this, "_life", "Player " + this.id + " :");
-		
+		FlxG.watch.add(this, "graphic.key", "name asset :" );
 	}
 
 	override public function draw():Void
@@ -95,7 +101,11 @@ class Hacker extends FlxSprite
 	//Fonction d'action du Hacker
 	public function hackPlayer():Void
 	{
-		animation.play("hack");
+		//SI REVELER ONLY
+		if (_actualSpriteName == _hackerSpriteName)
+		{
+			animation.play("hack");
+		}
 	}
 
 	public function getCounterHack():Void
@@ -105,6 +115,13 @@ class Hacker extends FlxSprite
 
 	public function getBullied(player:Player):Void
 	{
+		if (_actualSpriteName != _hackerSpriteName)
+		{
+			loadGraphic(_hackerSpriteName, true, 16, 16);
+			animation.add("hack", [0, 1, 0], 6, true);
+			animation.add("idle", [0], 6, false);
+		}
+		
 		if (_life > 0)
 		{
 			this._life--;
@@ -120,6 +137,13 @@ class Hacker extends FlxSprite
 			_life = -1;
 			_isOffensive  = false;
 		}
+		
+		var vector:FlxVector = new FlxVector(this.x - player.x, this.y - player.y);
+		vector.normalize();
+		var vectorPoint:FlxPoint = new FlxPoint(vector.x * player._bullyForce, vector.y * player._bullyForce);
+		velocity.addPoint(vectorPoint);
+	
+		
 	}
 
 	public function idle():Void
