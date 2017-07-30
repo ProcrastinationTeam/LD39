@@ -49,7 +49,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		// Pas besoin de la souris pour le jeu (pour le moment en tout cas) donc on la cache
-		FlxG.mouse.visible = false;
+		//FlxG.mouse.visible = false;
 
 		_exit = new FlxSprite();
 		_exit.alpha = 0;
@@ -194,7 +194,8 @@ class PlayState extends FlxState
 		FlxG.collide(_player, _foreground);
 		FlxG.collide(_player, _hackers); // Transform to Enemy maybe
 
-		FlxG.overlap(_player, _exit, playerExit);
+		FlxG.overlap(_player, _powerups, PlayerGetPowerup);
+		FlxG.overlap(_player, _exit, PlayerExit);
 
 		// PNJ
 		FlxG.collide(_npcs, _walls);
@@ -291,6 +292,18 @@ class PlayState extends FlxState
 		}
 	}
 
+	/**Fonction de recupération de powerUp
+	 *
+	 *
+	 */
+	private function PlayerGetPowerup(P:Player, UP:PowerUp):Void
+	{
+		if (P.alive && P.exists && UP.alive && UP.exists)
+		{
+			UP.kill();
+		}
+	}
+
 	/**
 	 * Fonction de debug (bully sans cout)
 	 *
@@ -321,8 +334,7 @@ class PlayState extends FlxState
 			new FlxTimer().start(_player._bullyingDelay, AfterBullyTimer);
 		}
 	}
-	
-	
+
 	/**
 	 * Essaye de bully un pnj
 	 *
@@ -384,7 +396,7 @@ class PlayState extends FlxState
 	 * @param	player
 	 * @param	sprite
 	 */
-	private function playerExit(player:Player, sprite:FlxSprite):Void
+	private function PlayerExit(player:Player, sprite:FlxSprite):Void
 	{
 		if (player.alive && player.exists)
 		{

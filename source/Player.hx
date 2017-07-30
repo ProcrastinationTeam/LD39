@@ -49,8 +49,8 @@ class Player extends FlxSprite
 
 		drag.x = drag.y = 1600;
 
-		setSize(8, 14);
-		offset.set(4, 2);
+		setSize(8, 6);
+		offset.set(4, 10);
 		
 		_delayAfterEmptyStamina = _staminaRecoveryPerSecond * _maxStamina;
 		_currentStamina = _maxStamina;

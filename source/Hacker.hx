@@ -108,6 +108,7 @@ class Hacker extends FlxSprite
 		if (_actualSpriteName == _hackerSpriteName)
 		{
 			animation.play("hack");
+			trace("HACKING");
 		}
 	}
 
@@ -143,8 +144,6 @@ class Hacker extends FlxSprite
 		vector.normalize();
 		var vectorPoint:FlxPoint = new FlxPoint(vector.x * player._bullyForce, vector.y * player._bullyForce);
 		velocity.addPoint(vectorPoint);
-	
-		
 	}
 
 
