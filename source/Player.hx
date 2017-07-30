@@ -88,6 +88,14 @@ class Player extends FlxSprite
 		new FlxTimer().start(Tweaking.playerKnockDownDuration, PlayerWakeUpAfterBullied);
 	}
 	
+	public function getBulliedByDogpunk():Void
+	{
+		_isAbleToMove = false;
+		FlxG.camera.shake(0.02); //TWEAKAGE POSSIBLE
+		Battery.instance._batteryLevel -= 5;
+		new FlxTimer().start(Tweaking.playerKnockDownDuration, PlayerWakeUpAfterBullied);
+	}
+	
 	private function PlayerWakeUpAfterBullied(Timer:FlxTimer):Void
 	{
 		_isAbleToMove = true;

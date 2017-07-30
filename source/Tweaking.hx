@@ -12,6 +12,11 @@ class Tweaking
 	// Interaction avec temps
 	public static inline var hackerKnockDownDuration					:Float = 2; // en seconde;
 	
+	// DOGPUNK
+	public static inline var dogpunkVisionDistance 						: Float = 100;
+	public static inline var dogpunkDistanceToHit						: Float = 10; 
+	public static inline var dogpunkCooldownBully						: Float = 5;
+	
 	// BATTERY
 	public static inline var batteryDecreaseRatePerSecond				: Float = 0.25;
 	public static inline var batteryLowBatteryThreshold					: Float = 10;
@@ -37,7 +42,7 @@ class Tweaking
 	public static inline var playerMinDistanceToBully 					: Int = 20;
 	public static inline var playerBullyingCost							: Float = 0.5;
 	public static inline var playerBullyingDelay						: Float = 0.5;
-	public static inline var playerBullyForce							: Float = 300;
+	public static inline var playerBullyForce							: Float = 100;
 	
 	// PNJ
 	public static inline var npcSpeed									: Float = 140;

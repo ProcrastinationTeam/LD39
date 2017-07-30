@@ -1,15 +1,21 @@
 package;
 
+import flash.geom.Point;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
-import flixel.math.FlxVector;
 import flixel.math.FlxVelocity;
 import flixel.util.FlxTimer;
+import flixel.util.FlxTimer.FlxTimerManager;
 
-class Hacker extends FlxSprite
+/**
+ * ...
+ * @author ElRyoGrande
+ */
+class DogPunk extends FlxSprite 
 {
+
 	public var etype(default, null)							: Int;
 	public var id 											: Int;
 
@@ -19,37 +25,44 @@ class Hacker extends FlxSprite
 	private var _moveDir									: Float;
 	public var _seesPlayer									: Bool = false;
 	public var _playerPosition(default, null)				: FlxPoint;
-	
+	public var _playerInstance 								: Player;
 
-	public var _isInRangeForHack 							: Bool = false;
+	public var _isInRangeForHack 			 				: Bool = false;
 	public var _life 										: Int = 2;
 	public var _isOffensive 								: Bool = true;
 	public var _isAbleToMove								: Bool = true;
 	public var _isCurrentlyHacking							: Bool = false;
-
-	public var _actualSpriteName 							: String;
-	public var _hackerSpriteName 							: String = "assets/images/enemy-1.png";
+	
+	public var _canBully									: Bool = true;
+	
+	public var _initialPos									: FlxPoint;
+	public var _initialPos2									: FlxPoint;
+	//public var _actualSpriteName 							: String;
+	//public var _hackerSpriteName 							: String = "assets/images/enemy-2.png";
 
 	//DEBUG LOG
 	public var distance 									: Int;
 
-	
-	public function new(X:Float=0, Y:Float=0, EType:Int, Id : Int)
+	public function new(X:Float=0, Y:Float=0,Id : Int, player: Player)
 	{
+		trace("J'existe");
 		super(X, Y);
 		id = Id;
-		etype = EType;
-		
+		//etype = EType;
+		_playerInstance = player; 
 		
 		//LOADING SPRITE RANDOM
-		_actualSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
-		loadGraphic(_actualSpriteName, true, 16, 16);
+		//_actualSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
+		loadGraphic("assets/images/dogpunk.png", true, 16, 16);
 		animation.add("idle", [0], 6, false);
 
 		//setFacingFlip(FlxObject.LEFT, false, false);
 		//setFacingFlip(FlxObject.RIGHT, true, false);
 
 		drag.x = drag.y = 10;
+		
+		
+		
 		//width = 8;
 		//height = 14;
 		//offset.x = 4;
@@ -62,9 +75,15 @@ class Hacker extends FlxSprite
 		_brain = new FSM(idle);
 		_idleTmr = 0;
 		_playerPosition = FlxPoint.get();
+		trace("POS PLAYER : " + FlxPoint.get());
 
 		//DEBUG SECTION
-		//	FlxG.watch.add(this, "_life", "Player " + this.id + " :");
+		FlxG.watch.add(this, "_initialPos", "DOG :");
+		FlxG.watch.add(this, "_initialPos2", "DOG 2 :");
+		 _initialPos2 = this.getScreenPosition();
+		 
+		_initialPos = new FlxPoint(X, Y);
+		//_initialPos = this.getPosition();
 
 	}
 
@@ -116,7 +135,7 @@ class Hacker extends FlxSprite
 		//TODO SI ON A DU TEMPS
 	}
 
-	public function getBullied(player:Player):Void
+	/*public function getBullied(player:Player):Void
 	{
 		_isAbleToMove = false;
 		new FlxTimer().start(Tweaking.hackerKnockDownDuration, HackerWakeUpAfterBullied);
@@ -154,11 +173,19 @@ class Hacker extends FlxSprite
 		var vectorPoint:FlxPoint = new FlxPoint(vector.x * Tweaking.playerBullyForce, vector.y * Tweaking.playerBullyForce);
 		velocity.addPoint(vectorPoint);
 
-	}
+	}*/
 
-	private function HackerWakeUpAfterBullied(Timer:FlxTimer):Void
+	private function DogpunkBullyingRecover(Timer:FlxTimer):Void
 	{
-		_isAbleToMove = true;
+		_canBully = true;
+		_seesPlayer = false;
+	//	_brain.activeState = idle;
+		
+	}
+	
+	private function DogpunkOnTheRoad(Timer:FlxTimer):Void
+	{
+		_brain.activeState = goBackHome;
 	}
 
 	public function idle():Void
@@ -169,7 +196,7 @@ class Hacker extends FlxSprite
 		{
 			_brain.activeState = chase;
 		}
-		else if (_idleTmr <= 0)
+		/*else if (_idleTmr <= 0)
 		{
 			if (FlxG.random.bool(1))
 			{
@@ -186,7 +213,7 @@ class Hacker extends FlxSprite
 			_idleTmr = FlxG.random.int(1, 4);
 		}
 		else
-			_idleTmr -= FlxG.elapsed;
+			_idleTmr -= FlxG.elapsed;*/
 
 	}
 
@@ -196,61 +223,41 @@ class Hacker extends FlxSprite
 		{
 			//Modification du Idle probable
 			_brain.activeState = idle;
-
-			if (_isInRangeForHack)
-			{
-				Battery.instance._numberOfHackersHacking--;
-				_isCurrentlyHacking = false;
-				_isInRangeForHack = false;
-			}
+			//Retourne a sa position de base
 		}
 		else
 		{
-			//SI EN RANGE DE HACK
-			if (distance < Tweaking.hackerMaxDistanceToHack)
+			trace("I SEE U");
+			FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.hackerSpeed)); 
+			if (distance < Tweaking.dogpunkDistanceToHit && _canBully)
 			{
-				if (distance < Tweaking.hackerBestDistanceToHack && !_isCurrentlyHacking)
-				{
-					// entre distance min et max
-					//trace("FOLLOW");
-					FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.hackerSpeed * 0.5)); // hacker speed reduite
-				}
-
-				if (distance < Tweaking.hackerMinDistanceToHack)
-				{
-					// sous distance min
-					//trace("IDLE");
-					this.velocity = new FlxPoint(0, 0);
-				}
-
-				if (!_isInRangeForHack && !_isCurrentlyHacking)
-				{
-					Battery.instance._numberOfHackersHacking++;
-					_isCurrentlyHacking = true;
-
-					//Animation gestion
-					if (_actualSpriteName == _hackerSpriteName)
-					{
-						animation.play("hack");
-					}
-					_isInRangeForHack = true;
-				}
-			}
-			else 	//SI PAS EN RANGE DE HACK
-			{
-				FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.hackerSpeed)); // fullspeed
-				//Fonction de Hack lancé quand le hacker est en range (idée de rajouter une connexion de x secondes)
-				if (_isInRangeForHack)
-				{
-					Battery.instance._numberOfHackersHacking--;
-					_isCurrentlyHacking = false;
-					_isInRangeForHack = false;
-				}
-
+				_playerInstance.getBulliedByDogpunk();
+				_isOffensive = false;
+				_canBully = false;
+				
+				new FlxTimer().start(1, DogpunkOnTheRoad);
+				new FlxTimer().start(Tweaking.dogpunkCooldownBully, DogpunkBullyingRecover);
 			}
 		}
 
 	}
+	
+	public function goBackHome():Void
+	{
+		
+			var o : FlxPoint = new	FlxPoint(130, 100);
+			//FlxVelocity.moveTowardsPoint(this, _initialPos2 , Std.int(Tweaking.hackerSpeed));
+		this.setPosition(_initialPos.x,_initialPos.y);
+	
+		trace(this.getPosition().toString());
+		trace("INITIAL POS :" + _initialPos.toString());
+		//if (this.getPosition() == _initialPos)
+		//{
+			_brain.activeState = idle;
+			//trace("IDLE");
+		//}
+	}
+	
 
 	override public function update(elapsed:Float):Void
 	{
@@ -260,4 +267,5 @@ class Hacker extends FlxSprite
 		}
 		super.update(elapsed);
 	}
+	
 }

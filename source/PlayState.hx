@@ -38,6 +38,7 @@ class PlayState extends FlxState
 
 	// Environement variables
 	private var _hackers							: FlxTypedGroup<Hacker>;
+	private var _dogpunks							: FlxTypedGroup<DogPunk>;
 	private var _npcs								: FlxTypedGroup<PNJ>;
 	private var _powerups							: FlxTypedGroup<PowerUp>;
 
@@ -46,6 +47,7 @@ class PlayState extends FlxState
 	// Debug variable
 	private var _counterHacker 						: Int = 0;
 	private var _counterPnj							: Int = 0;
+	private var _counterDogpunk						: Int = 0;
 
 	private var _showWifi 							: Bool = false;
 
@@ -115,6 +117,8 @@ class PlayState extends FlxState
 
 		_npcs = new FlxTypedGroup<PNJ>();
 		//add(_npcs);
+		
+		_dogpunks = new FlxTypedGroup<DogPunk>();
 
 		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
@@ -139,6 +143,10 @@ class PlayState extends FlxState
 		_hackers.forEachAlive(function(hacker:Hacker)
 		{
 			_maxiGroup.add(hacker);
+		});
+		_dogpunks.forEachAlive(function(dogpunk:DogPunk)
+		{
+			_maxiGroup.add(dogpunk);
 		});
 		_npcs.forEachAlive(function(pnj:PNJ)
 		{
@@ -188,6 +196,11 @@ class PlayState extends FlxState
 			_npcs.add(new PNJ(x + 4, y, _counterPnj));
 			_counterPnj++;
 		}
+		else if (entityName == "dogpunk")
+		{
+			_dogpunks.add(new DogPunk(x , y, _counterDogpunk, _player));
+			_counterDogpunk++;
+		}
 		else if (entityName == "exit")
 		{
 			_exit.x = x;
@@ -218,6 +231,27 @@ class PlayState extends FlxState
 			hacker._seesPlayer = false;
 		}
 	}
+	
+	/**
+	 * Check si un hacker voit le joueur
+	 *
+	 * @param	dogpunk
+	 */
+	private function checkEnemyVisionDogpunk(dogpunk:DogPunk):Void
+	{
+		dogpunk.distance = FlxMath.distanceBetween(_player, dogpunk);
+		FlxG.watch.add(dogpunk, "distance", "Distance between me and hacker " + dogpunk.id +" : ");
+		if (_walls.ray(dogpunk.getMidpoint(), _player.getMidpoint()) && dogpunk.distance < Tweaking.dogpunkVisionDistance)
+		{
+			dogpunk._seesPlayer = true;
+			dogpunk._playerPosition.copyFrom(_player.getMidpoint());
+		}
+		else 
+		{
+			dogpunk._seesPlayer = false;
+		}
+	}
+	
 
 	override public function update(elapsed:Float):Void
 	{
@@ -235,6 +269,7 @@ class PlayState extends FlxState
 		FlxG.collide(_player, _npcs);
 		FlxG.collide(_player, _foreground);
 		FlxG.collide(_player, _hackers); // Transform to Enemy maybe
+		FlxG.collide(_player, _dogpunks);
 
 		FlxG.overlap(_player, _powerups, PlayerGetPowerup);
 		FlxG.overlap(_player, _exit, PlayerExit);
@@ -248,6 +283,12 @@ class PlayState extends FlxState
 		FlxG.collide(_hackers, _npcs);
 		FlxG.collide(_hackers, _walls);
 		FlxG.collide(_hackers, _foreground);
+		
+		// DOGPUNK (ENEMY)
+		FlxG.collide(_dogpunks, _dogpunks);
+		FlxG.collide(_dogpunks, _npcs);
+		FlxG.collide(_dogpunks, _walls);
+		FlxG.collide(_dogpunks, _foreground);
 
 		// POWERUP
 		FlxG.collide(_powerups, _walls);
@@ -258,6 +299,7 @@ class PlayState extends FlxState
 		// FOREACH SECTION (FONCTION APPLIQUEE A UN GROUPE)
 		//Action applique a un groupe d'entité
 		_hackers.forEachAlive(checkEnemyVision);
+		_dogpunks.forEachAlive(checkEnemyVisionDogpunk);
 		//_grpHackers.forEachAlive(checkRangeForHack);
 
 		// SECTION GESTION DE LA BATTERIE
