@@ -6,9 +6,11 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
+import flixel.group.FlxGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
@@ -27,7 +29,7 @@ class PlayState extends FlxState
 	// Variables pour le call de maman
 	private var _isInCallWithMom					: Bool = false;
 	private var _lastCallWithMomDelay				: Float = 0;
-	
+
 	// TODO: ajouter une mécanique de décrochage ?
 	//private var _momIsCalling						: Bool = false;
 
@@ -35,6 +37,8 @@ class PlayState extends FlxState
 	private var _hackers							: FlxTypedGroup<Hacker>;
 	private var _npcs								: FlxTypedGroup<PNJ>;
 	private var _powerups							: FlxTypedGroup<PowerUp>;
+	
+	private var _maxiGroup 							: FlxTypedGroup<FlxSprite>;
 
 	// Debug variable
 	private var _counterHacker 						: Int = 0;
@@ -80,16 +84,16 @@ class PlayState extends FlxState
 		add(_walls);
 
 		_player = new Player();
-		add(_player);
+		//add(_player);
 
 		_hackers = new FlxTypedGroup<Hacker>();
-		add(_hackers);
+		//add(_hackers);
 
 		_npcs = new FlxTypedGroup<PNJ>();
-		add(_npcs);
+		//add(_npcs);
 
 		_powerups = new FlxTypedGroup<PowerUp>();
-		add(_powerups);
+		//add(_powerups);
 
 		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
@@ -111,6 +115,20 @@ class PlayState extends FlxState
 		// HUD (partie gauche)
 		_hud = new HUD(_player);
 		add(_hud);
+		
+		_maxiGroup = new FlxTypedGroup<FlxSprite>();
+		
+		_maxiGroup.add(_player);
+		_hackers.forEachAlive(function(hacker:Hacker) {
+			_maxiGroup.add(hacker);
+		});
+		_npcs.forEachAlive(function(pnj:PNJ) {
+			_maxiGroup.add(pnj);
+		});
+		_powerups.forEachAlive(function(powerUp:PowerUp) {
+			_maxiGroup.add(powerUp);
+		});
+		add(_maxiGroup);
 
 		// ZONE DE DEBUG
 		FlxG.watch.add(_battery, "_numberOfHackersHacking" );
@@ -178,6 +196,8 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+
+		_maxiGroup.sort(FlxSort.byY);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
