@@ -67,7 +67,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
 		_bullyDelayText = new FlxText(2, 48);
 		_bullyDelayText.height = 16;
-		_bullyDelayText.text = "PUSH CD";
+		_bullyDelayText.text = "BULLY CD";
 		add(_bullyDelayText);
 
 		_bullyDelayBar = new FlxBar(0, 64, LEFT_TO_RIGHT, 64, 16);

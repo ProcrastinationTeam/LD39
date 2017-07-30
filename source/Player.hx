@@ -23,7 +23,7 @@ class Player extends FlxSprite
 	public var _canSprint							: Bool = true;
 
 	// Bullying (tweakable)
-	public var _minDistanceToBully 					: Int = 15;
+	public var _minDistanceToBully 					: Int = 20;
 	public var _bullyingCost						: Float = 0.5;
 	public var _bullyingDelay						: Float = 0.5;
 	public var _bullyForce							: Float = 300;
