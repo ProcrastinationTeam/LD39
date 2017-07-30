@@ -120,7 +120,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 			}
 		}
 		
-		if (_battery._batteryLevel < _battery._lowBatteryThreshold) {
+		if (_battery._batteryLevel < Tweaking.batteryLowBatteryThreshold) {
 			// TODO: Afficher un hud de low batterie
 		}
 

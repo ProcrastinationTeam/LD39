@@ -25,13 +25,9 @@ class PlayState extends FlxState
 	private var _hud 								: HUD;
 
 	// Variables pour le call de maman
-	private var _callWithMomDuration				: Float = 3;
-	private var _minDelayBetweenTwoCalls			: Float = 4;
-	private var _durationBetweenCallScreenShakes	: Float = 0.5;
-
 	private var _isInCallWithMom					: Bool = false;
 	private var _lastCallWithMomDelay				: Float = 0;
-
+	
 	// TODO: ajouter une mécanique de décrochage ?
 	//private var _momIsCalling						: Bool = false;
 
@@ -100,7 +96,7 @@ class PlayState extends FlxState
 
 		_battery = Battery.instance;
 		// TODO: Fixer des valeurs, et les sortir d'ici
-		_battery.initBattery(FlxG.random.float(40, 60), 0.3);
+		_battery.initBattery(FlxG.random.float(40, 60));
 		// Même si elle n'a pas de sprite à afficher, il faut l'ajouter au state sinon ça fonctionne pas (le update se lance pas ?)
 		add(_battery);
 
@@ -169,7 +165,7 @@ class PlayState extends FlxState
 		hacker.distance = FlxMath.distanceBetween(_player, hacker);
 		FlxG.watch.add(hacker, "distance", "Distance between me and hacker " + hacker.id +" : ");
 
-		if (_walls.ray(hacker.getMidpoint(), _player.getMidpoint()) && hacker.distance < 75)
+		if (_walls.ray(hacker.getMidpoint(), _player.getMidpoint()) && hacker.distance < Tweaking.hackerVisionDistance)
 		{
 			hacker._seesPlayer = true;
 			hacker._playerPosition.copyFrom(_player.getMidpoint());
@@ -220,10 +216,8 @@ class PlayState extends FlxState
 		// SECTION GESTION DE LA BATTERIE
 		if (_isInCallWithMom)
 		{
-			_battery._batteryLevel -= _battery._batteryDecreaseRatePerSecondThroughCall * elapsed;
+			_battery._batteryLevel -= Tweaking.batteryDecreaseRatePerSecondThroughCall * elapsed;
 		}
-
-		var batteryLevel:Int = Math.round(_battery._batteryLevel);
 
 		// BULLY SECTION
 		if (FlxG.keys.pressed.X && _player._canBully)
@@ -233,7 +227,7 @@ class PlayState extends FlxState
 		}
 
 		// MAMAN APPELLE SECTION
-		if (!_isInCallWithMom && _lastCallWithMomDelay > _callWithMomDuration + _minDelayBetweenTwoCalls)
+		if (!_isInCallWithMom && _lastCallWithMomDelay > Tweaking.momCallDuration + Tweaking.momCallDelayBetweenTwoCalls)
 		{
 			_isInCallWithMom = FlxG.random.float() > 0.99;
 			if (_isInCallWithMom)
@@ -241,8 +235,8 @@ class PlayState extends FlxState
 				_lastCallWithMomDelay = 0;
 				FlxG.camera.shake(0.005, 0.1);
 				_hud.startCall();
-				new FlxTimer().start(_callWithMomDuration, CallWithMomEndend);
-				new FlxTimer().start(_durationBetweenCallScreenShakes, CallScreenShake, Std.int(_callWithMomDuration));
+				new FlxTimer().start(Tweaking.momCallDuration, CallWithMomEndend);
+				new FlxTimer().start(Tweaking.momCallDelayBetweenScreenShakes, CallScreenShake, Std.int(Tweaking.momCallDuration));
 			}
 		}
 
@@ -298,7 +292,7 @@ class PlayState extends FlxState
 	 */
 	private function TryToBullyFreely(hacker:Hacker):Void
 	{
-		if (FlxMath.distanceBetween(_player, hacker) < _player._minDistanceToBully)
+		if (FlxMath.distanceBetween(_player, hacker) < Tweaking.playerMinDistanceToBully)
 		{
 			hacker.getBullied(_player);
 		}
@@ -312,13 +306,13 @@ class PlayState extends FlxState
 	private function TryToBullyHacker(hacker:Hacker):Void
 	{
 		// TODO: faire une autre fonction pour bully aussi les pnj et les punks à chien
-		if (FlxMath.distanceBetween(_player, hacker) < _player._minDistanceToBully)
+		if (FlxMath.distanceBetween(_player, hacker) < Tweaking.playerMinDistanceToBully)
 		{
 			hacker.getBullied(_player);
 			_player._canBully = false;
-			_player._currentStamina -= _player._bullyingCost;
-			_player._currentBullyCooldown = _player._bullyingDelay;
-			new FlxTimer().start(_player._bullyingDelay, AfterBullyTimer);
+			_player._currentStamina -= Tweaking.playerBullyingCost;
+			_player._currentBullyCooldown = Tweaking.playerBullyingDelay;
+			new FlxTimer().start(Tweaking.playerBullyingDelay, AfterBullyTimer);
 		}
 	}
 	
@@ -331,13 +325,13 @@ class PlayState extends FlxState
 	private function TryToBullyNpc(pnj:PNJ):Void
 	{
 		// TODO: faire une autre fonction pour bully aussi les pnj et les punks à chien
-		if (FlxMath.distanceBetween(_player, pnj) < _player._minDistanceToBully)
+		if (FlxMath.distanceBetween(_player, pnj) < Tweaking.playerMinDistanceToBully)
 		{
 			pnj.getBullied(_player);
 			_player._canBully = false;
-			_player._currentStamina -= _player._bullyingCost;
-			_player._currentBullyCooldown = _player._bullyingDelay;
-			new FlxTimer().start(_player._bullyingDelay, AfterBullyTimer);
+			_player._currentStamina -= Tweaking.playerBullyingCost;
+			_player._currentBullyCooldown = Tweaking.playerBullyingDelay;
+			new FlxTimer().start(Tweaking.playerBullyingDelay, AfterBullyTimer);
 		}
 	}
 

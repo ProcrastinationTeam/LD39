@@ -10,7 +10,6 @@ import flixel.math.FlxMath;
 
 class PNJ extends FlxSprite 
 {
-	public var speed:Float = 140;
 	public var id : Int;
 
 	//IA variables
@@ -99,7 +98,7 @@ class PNJ extends FlxSprite
 			{
 				_moveDir = FlxG.random.int(0, 8) * 45;
 
-				velocity.set(speed * 0.5, 0);
+				velocity.set(Tweaking.npcSpeed * 0.5, 0);
 				velocity.rotate(FlxPoint.weak(), _moveDir);
 			}
 			_idleTmr = FlxG.random.int(1, 4);
@@ -119,7 +118,7 @@ class PNJ extends FlxSprite
 	{
 		var vector:FlxVector = new FlxVector(this.x - player.x, this.y - player.y);
 		vector.normalize();
-		var vectorPoint:FlxPoint = new FlxPoint(vector.x * player._bullyForce, vector.y * player._bullyForce);
+		var vectorPoint:FlxPoint = new FlxPoint(vector.x * Tweaking.playerBullyForce, vector.y * Tweaking.playerBullyForce);
 		velocity.addPoint(vectorPoint);
 	}
 }

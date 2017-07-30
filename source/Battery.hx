@@ -8,17 +8,7 @@ class Battery extends FlxSprite
 	public static var instance(default, null): Battery = new Battery();
 	
 	public var _batteryLevel								: Float = 50;
-	public var _batteryDecreaseRatePerSecond				: Float = 0.25;
-	
-	public var _lowBatteryThreshold							: Float = 10;
-	public var _lowBatterySaverMultiplier 					: Float = 0.3;
-
-	// Si on est entrain de parler avec maman, ça pompe la batterie
-	public var _batteryDecreaseRatePerSecondThroughCall		: Float = 0.5;
-	
-	// Pompage de batterie / hacker / seconde
 	public var _numberOfHackersHacking 						: Int = 0;
-	private var _batteryDecreaseRatePerSecondPerHacker		: Float = 0.7;
 
 	// Constructeur privé pour singletoniser
 	private function new()
@@ -27,9 +17,8 @@ class Battery extends FlxSprite
 	}
 	
 	// "Constructeur" (pour init les valeurs de la batterie), à appeller pour relancer une partie
-	public function initBattery(InitialBatteryValue:Float, BatteryDecreaseRatePerSecond:Float):Void
+	public function initBattery(InitialBatteryValue:Float):Void
 	{
-		_batteryDecreaseRatePerSecond = BatteryDecreaseRatePerSecond;
 		_batteryLevel = InitialBatteryValue;
 		_numberOfHackersHacking = 0;
 	}
@@ -39,10 +28,10 @@ class Battery extends FlxSprite
 		super.update(elapsed);
 
 		// La batterie diminue toute seule par défaut
-		_batteryLevel -= _batteryDecreaseRatePerSecond * elapsed * (_batteryLevel < _lowBatteryThreshold ? _lowBatterySaverMultiplier : 1);
+		_batteryLevel -= Tweaking.batteryDecreaseRatePerSecond * elapsed * (_batteryLevel < Tweaking.batteryLowBatteryThreshold ? Tweaking.batteryLowBatterySaverMultiplier : 1);
 		
 		// Si on se fait hack, la batterie se fait voler
-		_batteryLevel -= _numberOfHackersHacking * _batteryDecreaseRatePerSecondPerHacker * elapsed;
+		_batteryLevel -= _numberOfHackersHacking * Tweaking.batteryDecreaseRatePerSecondPerHacker * elapsed;
 	}
 
 	// Quand on se fait pomper de la batterie de façon ponctuelle, ça screenshake un coup

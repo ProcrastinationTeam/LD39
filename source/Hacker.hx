@@ -8,12 +8,10 @@ import flixel.math.FlxVelocity;
 
 class Hacker extends FlxSprite
 {
-
-	public var speed:Float = 140;
 	public var etype(default, null):Int;
 	public var id : Int;
 
-	//IA variables
+	// IA variables
 	private var _brain:FSM;
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
@@ -24,9 +22,9 @@ class Hacker extends FlxSprite
 	public var _life : Int;
 	public var _isOffensive : Bool;
 
-	//DEBUG LOG
+	// DEBUG LOG
 	public var distance : Int;
-
+	
 	public function new(X:Float=0, Y:Float=0, EType:Int, Id : Int)
 	{
 		super(X, Y);
@@ -115,13 +113,14 @@ class Hacker extends FlxSprite
 		if (_life == 0)
 		{
 			_brain.activeState = idle;
-			Battery.instance._numberOfHackersHacking--;
-			//Uninstanciation de la variable
+			if (_isInRangeForHack) {
+				_isInRangeForHack = false;
+				Battery.instance._numberOfHackersHacking--;
+			}
 			_life = -1;
 			_isOffensive  = false;
 		}
 	}
-
 
 	public function idle():Void
 	{
@@ -142,7 +141,7 @@ class Hacker extends FlxSprite
 			{
 				_moveDir = FlxG.random.int(0, 8) * 45;
 
-				velocity.set(speed * 0.5, 0);
+				velocity.set(Tweaking.hackerSpeed * 0.5, 0);
 				velocity.rotate(FlxPoint.weak(), _moveDir);
 
 			}
@@ -164,9 +163,9 @@ class Hacker extends FlxSprite
 		else
 		{
 			//VALUE TO TWEAK
-			if (distance > 50)
+			if (distance > Tweaking.hackerDistanceToHack)
 			{
-				FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(speed));
+				FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.hackerSpeed));
 				if (_isInRangeForHack)
 				{
 					Battery.instance._numberOfHackersHacking--;
@@ -194,9 +193,7 @@ class Hacker extends FlxSprite
 
 	override public function update(elapsed:Float):Void
 	{
-		
 		_brain.update();
 		super.update(elapsed);
 	}
-
 }

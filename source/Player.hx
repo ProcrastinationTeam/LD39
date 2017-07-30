@@ -9,26 +9,12 @@ import flixel.util.FlxTimer;
 
 class Player extends FlxSprite
 {
-	// Sprint + stamina (tweakable)
-	public var _walkingSpeed						: Float = 150;
-	public var _sprintMultiplier					: Float = 1.5;
-	public var _maxStamina							: Float = 2;
-	public var _staminaRecoveryPerSecond			: Float = 1;
-	public var _staminaSprintConsumptionPerSecond	: Float = 1;
-	public var _delayAfterEmptyStamina 				: Float;
-	
-	// Sprint + stamina (non tweakable)
+	// Sprint + stamina
 	public var _currentStamina						: Float;
 	public var _isSprinting							: Bool = false;
 	public var _canSprint							: Bool = true;
 
-	// Bullying (tweakable)
-	public var _minDistanceToBully 					: Int = 20;
-	public var _bullyingCost						: Float = 0.5;
-	public var _bullyingDelay						: Float = 0.5;
-	public var _bullyForce							: Float = 300;
-	
-	// Bullying (non tweakable)
+	// Bullying
 	public var _canBully							: Bool = true;
 	public var _currentBullyCooldown 				: Float;
 	
@@ -52,8 +38,7 @@ class Player extends FlxSprite
 		setSize(8, 14);
 		offset.set(4, 2);
 		
-		_delayAfterEmptyStamina = _staminaRecoveryPerSecond * _maxStamina;
-		_currentStamina = _maxStamina;
+		_currentStamina = Tweaking.playerMaxStamina;
 		
 		_currentBullyCooldown = 0;
 		
@@ -68,18 +53,18 @@ class Player extends FlxSprite
 		
 		// Gestion de la jauge de stamina (sprint)
 		if (_isSprinting) {
-			_currentStamina -= elapsed * _staminaSprintConsumptionPerSecond;
+			_currentStamina -= elapsed * Tweaking.playerStaminaSprintConsumptionPerSecond;
 		} else {
-			_currentStamina += elapsed * _staminaRecoveryPerSecond;
-			if (_currentStamina > _maxStamina){
-				_currentStamina = _maxStamina;
+			_currentStamina += elapsed * Tweaking.playerStaminaRecoveryPerSecond;
+			if (_currentStamina > Tweaking.playerMaxStamina){
+				_currentStamina = Tweaking.playerMaxStamina;
 			}
 		}
 		
 		// A bout de souffle, peut plus sprinter
 		if (_currentStamina <= 0 && _canSprint) {
 			_canSprint = false;
-			new FlxTimer().start(_delayAfterEmptyStamina, StaminaRecoveryFinished);
+			new FlxTimer().start(Tweaking.playerDelayAfterEmptyStamina, StaminaRecoveryFinished);
 		}
 		
 		// Update du cooldown du bullying
@@ -92,7 +77,7 @@ class Player extends FlxSprite
 	
 	private function StaminaRecoveryFinished(Timer:FlxTimer):Void {
 		_canSprint = true;
-		_currentStamina = _maxStamina;
+		_currentStamina = Tweaking.playerMaxStamina;
 	}
 	
 	/**
@@ -161,7 +146,7 @@ class Player extends FlxSprite
 				facing = FlxObject.RIGHT;
 			}
 
-			velocity.set((_isSprinting ? _walkingSpeed * _sprintMultiplier : _walkingSpeed), 0);
+			velocity.set((_isSprinting ? Tweaking.playerWalkingSpeed * Tweaking.playerSprintMultiplier : Tweaking.playerWalkingSpeed), 0);
 			velocity.rotate(FlxPoint.weak(0, 0), _ma);
 
 			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
