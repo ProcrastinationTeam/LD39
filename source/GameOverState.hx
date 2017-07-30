@@ -22,8 +22,8 @@ class GameOverState extends FlxState
 	*/
 	public function new(Win:Bool)
 	{
-		_win = Win;
 		super();
+		_win = Win;
 	}
 
 	override public function create():Void
@@ -45,6 +45,8 @@ class GameOverState extends FlxState
 		add(_credit);
 		
 		FlxG.mouse.visible = true;
+		
+		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
 	}
@@ -54,10 +56,9 @@ class GameOverState extends FlxState
 		super.update(elapsed);
 		blink();
 
-		if (FlxG.mouse.justPressed)
+		if (FlxG.mouse.justPressed || FlxG.keys.justPressed.SPACE)
 		{
-			//Lance le jeu
-			goMainMenu();
+			goBackToMainMenu();
 		}
 
 	}
@@ -82,7 +83,7 @@ class GameOverState extends FlxState
 	/**
 	* When the user hits the main menu button, it should fade out and then take them back to the MenuState
 	*/
-	private function goMainMenu():Void
+	private function goBackToMainMenu():Void
 	{
 		FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 		{

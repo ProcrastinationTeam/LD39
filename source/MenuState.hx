@@ -48,9 +48,9 @@ class MenuState extends FlxState
 		blink();
 
 		// TODO: Faire que ça marche aussi avec n'importe quelle touche du clavier
-		if (FlxG.mouse.justPressed)
+		if (FlxG.mouse.justPressed || FlxG.keys.justPressed.SPACE)
 		{
-			FlxG.switchState(new PlayState());
+			FlxG.switchState(new PlayState(1));
 		}
 	}
 
