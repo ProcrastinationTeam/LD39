@@ -55,7 +55,7 @@ class PlayState extends FlxState
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
 		_walls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
-		_walls.follow();
+		_walls.follow(FlxG.camera, 1);
 		_walls.setTileProperties(1, FlxObject.NONE);
 		_walls.setTileProperties(4, FlxObject.NONE);
 		_walls.setTileProperties(7, FlxObject.NONE);

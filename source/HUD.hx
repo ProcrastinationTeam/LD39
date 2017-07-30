@@ -28,6 +28,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
 	// Référence au player (pas propre ? pratique en tout cas)
 	private var _player 					: Player;
+	private var _battery					: Battery;
 
 	public function new(player:Player)
 	{
@@ -92,6 +93,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		});
 
 		_player = player;
+		_battery = Battery.instance;
 
 		FlxG.watch.add(_batteryBar, "height");
 	}
@@ -100,11 +102,11 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	{
 		super.update(elapsed);
 
-		var batteryLevel:Int = Math.round(Battery.instance._batteryLevel);
+		var batteryLevel:Int = Math.round(_battery._batteryLevel);
 		_batteryBar.value = batteryLevel;
 		_batteryText.text = batteryLevel + "%";
 
-		if (Battery.instance._numberOfHackersHacking > 0)
+		if (_battery._numberOfHackersHacking > 0)
 		{
 			_wifiIcon.visible = true;
 			_wifiIcon.animation.play("hack");
@@ -117,10 +119,14 @@ class HUD extends FlxTypedGroup<FlxSprite>
 				_wifiIcon.animation.finish();
 			}
 		}
+		
+		if (_battery._batteryLevel < _battery._lowBatteryThreshold) {
+			// TODO: Afficher un hud de low batterie
+		}
 
 		_staminaBar.value = _player._currentStamina;
 
-		_bullyDelayBar.value = 0.5 -  _player._currentBullyCooldown;
+		_bullyDelayBar.value = 0.5 - _player._currentBullyCooldown;
 	}
 
 	/**
