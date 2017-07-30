@@ -114,6 +114,9 @@ class PlayState extends FlxState
 		_walls.setTileProperties(77, FlxObject.ANY);
 		add(_walls);
 
+		_powerups = new FlxTypedGroup<PowerUp>();
+		add(_powerups);
+		
 		_player = new Player();
 		//add(_player);
 
@@ -122,9 +125,6 @@ class PlayState extends FlxState
 
 		_npcs = new FlxTypedGroup<PNJ>();
 		//add(_npcs);
-
-		_powerups = new FlxTypedGroup<PowerUp>();
-		//add(_powerups);
 
 		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
@@ -234,13 +234,13 @@ class PlayState extends FlxState
 	{
 		hacker.distance = FlxMath.distanceBetween(_player, hacker);
 		FlxG.watch.add(hacker, "distance", "Distance between me and hacker " + hacker.id +" : ");
-
 		if (_walls.ray(hacker.getMidpoint(), _player.getMidpoint()) && hacker.distance < Tweaking.hackerVisionDistance)
 		{
 			hacker._seesPlayer = true;
 			hacker._playerPosition.copyFrom(_player.getMidpoint());
 		}
-		else {
+		else 
+		{
 			hacker._seesPlayer = false;
 		}
 	}

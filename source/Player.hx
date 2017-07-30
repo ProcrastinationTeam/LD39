@@ -13,7 +13,8 @@ class Player extends FlxSprite
 	public var _currentStamina						: Float;
 	public var _isSprinting							: Bool = false;
 	public var _canSprint							: Bool = true;
-
+	public var _isAbleToMove						: Bool = true;
+	
 	// Bullying
 	public var _canBully							: Bool = true;
 	public var _currentBullyCooldown 				: Float;
@@ -80,6 +81,18 @@ class Player extends FlxSprite
 		_currentStamina = Tweaking.playerMaxStamina;
 	}
 	
+	public function getBullied():Void
+	{
+		_isAbleToMove = false;
+		FlxG.camera.shake(0.02); //TWEAKAGE POSSIBLE
+		new FlxTimer().start(Tweaking.playerKnockDownDuration, PlayerWakeUpAfterBullied);
+	}
+	
+	private function PlayerWakeUpAfterBullied(Timer:FlxTimer):Void
+	{
+		_isAbleToMove = true;
+	}
+	
 	/**
 	 * Gestion des mouvements et sprint
 	 */
@@ -89,11 +102,14 @@ class Player extends FlxSprite
 		var _down:Bool = false;
 		var _left:Bool = false;
 		var _right:Bool = false;
-
-		_up = FlxG.keys.anyPressed([UP, Z]);
-		_down = FlxG.keys.anyPressed([DOWN, S]);
-		_left = FlxG.keys.anyPressed([LEFT, Q]);
-		_right = FlxG.keys.anyPressed([RIGHT, D]);
+		
+		if (_isAbleToMove)
+		{
+			_up = FlxG.keys.anyPressed([UP, Z]);
+			_down = FlxG.keys.anyPressed([DOWN, S]);
+			_left = FlxG.keys.anyPressed([LEFT, Q]);
+			_right = FlxG.keys.anyPressed([RIGHT, D]);
+		}
 				
 		_isSprinting = FlxG.keys.pressed.SPACE && _canSprint;
 
