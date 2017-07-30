@@ -14,6 +14,8 @@ class Tweaking
 	public static inline var batteryDecreaseRatePerSecondThroughCall	: Float = 0.5;
 	public static inline var batteryDecreaseRatePerSecondPerHacker		: Float = 0.7;
 	
+	public static inline var batteryToAdd								: Float = 10.0;
+	
 	// PLAYER
 	// Sprint + stamina
 	public static inline var playerWalkingSpeed							: Float = 150;

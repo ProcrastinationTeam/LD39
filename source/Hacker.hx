@@ -141,7 +141,7 @@ class Hacker extends FlxSprite
 		
 		var vector:FlxVector = new FlxVector(this.x - player.x, this.y - player.y);
 		vector.normalize();
-		var vectorPoint:FlxPoint = new FlxPoint(vector.x * player._bullyForce, vector.y * player._bullyForce);
+		var vectorPoint:FlxPoint = new FlxPoint(vector.x * Tweaking.playerBullyForce, vector.y * Tweaking.playerBullyForce);
 		velocity.addPoint(vectorPoint);
 	}
 

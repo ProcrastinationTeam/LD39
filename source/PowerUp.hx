@@ -36,11 +36,9 @@ class PowerUp extends FlxSprite
 		exists = false;
 	}
 
-	//TWEAKING
 	private function addBattery():Void
 	{
-		var valueToAdd : Float = 10.0;
-		Battery.instance._batteryLevel += valueToAdd;
+		Battery.instance._batteryLevel += Tweaking.batteryToAdd;
 	}
 	
 }
