@@ -15,6 +15,8 @@ class PlayState extends FlxState
 {
 	private var _map 								: FlxOgmoLoader;
 	private var _walls 								: FlxTilemap;
+	private var _foreground							: FlxTilemap;
+
 	private var _player 							: Player;
 	private var _battery							: Battery;
 
@@ -33,9 +35,10 @@ class PlayState extends FlxState
 	// TODO: ajouter une mécanique de décrochage ?
 	//private var _momIsCalling						: Bool = false;
 
-	// Enemy variables
+	// Environement variables
 	private var _hackers							: FlxTypedGroup<Hacker>;
 	private var _npcs								: FlxTypedGroup<PNJ>;
+	private var _powerups							: FlxTypedGroup<PowerUp>;
 
 	// Debug variable
 	private var _counterHacker 						: Int = 0;
@@ -57,7 +60,9 @@ class PlayState extends FlxState
 		_walls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
 		_walls.follow();
 		_walls.setTileProperties(1, FlxObject.NONE);
+		_walls.setTileProperties(2, FlxObject.NONE);
 		_walls.setTileProperties(4, FlxObject.NONE);
+		_walls.setTileProperties(5, FlxObject.NONE);
 		_walls.setTileProperties(7, FlxObject.NONE);
 		_walls.setTileProperties(37, FlxObject.NONE);
 		_walls.setTileProperties(38, FlxObject.NONE);
@@ -86,6 +91,9 @@ class PlayState extends FlxState
 
 		_npcs = new FlxTypedGroup<PNJ>();
 		add(_npcs);
+
+		_powerups = new FlxTypedGroup<PowerUp>();
+		add(_powerups);
 
 		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
@@ -130,11 +138,6 @@ class PlayState extends FlxState
 			_player.x = x;
 			_player.y = y;
 		}
-		else if (entityName == "exit")
-		{
-			_exit.x = x;
-			_exit.y = y;
-		}
 		else if (entityName == "hacker")
 		{
 			_hackers.add(new Hacker(x + 4, y, Std.parseInt(entityData.get("etype")), _counterHacker));
@@ -144,6 +147,15 @@ class PlayState extends FlxState
 		{
 			_npcs.add(new PNJ(x + 4, y, _counterPnj));
 			_counterPnj++;
+		}
+		else if (entityName == "exit")
+		{
+			_exit.x = x;
+			_exit.y = y;
+		}
+		else if (entityName == "powerup")
+		{
+			_powerups.add(new PowerUp(x + 4, y));
 		}
 	}
 
@@ -167,19 +179,6 @@ class PlayState extends FlxState
 		}
 	}
 
-	/**
-	 * Check si un hacker est à portée pour hacker le joueur
-	 *
-	 * @param	hacker
-	 */
-	//private function checkRangeForHack(hacker:Hacker):Void
-	//{
-	//	if (hacker._isInRangeForHack)
-	//	{
-	//		_battery._numberOfHackersHacking++;
-	//	}
-	//}
-
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
@@ -188,22 +187,35 @@ class PlayState extends FlxState
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////// Reformater
 		// COLLISION SECTION
+
+		// PLAYER
 		FlxG.collide(_player, _walls);
+		FlxG.collide(_player, _npcs);
+		FlxG.collide(_player, _foreground);
+		FlxG.collide(_player, _hackers); // Transform to Enemy maybe
+
 		FlxG.overlap(_player, _exit, playerExit);
 
 		// PNJ
 		FlxG.collide(_npcs, _walls);
 		FlxG.collide(_npcs, _npcs);
 
-		//FlxG.collide(_player, _grpHackers); //
+		// HACKER (ENEMY)
 		FlxG.collide(_hackers, _hackers);
+		FlxG.collide(_hackers, _npcs);
 		FlxG.collide(_hackers, _walls);
+		FlxG.collide(_hackers, _foreground);
 
+		// POWERUP
+		FlxG.collide(_powerups, _walls);
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// FOREACH SECTION (FONCTION APPLIQUEE A UN GROUPE)
 		//Action applique a un groupe d'entité
 		_hackers.forEachAlive(checkEnemyVision);
 		//_grpHackers.forEachAlive(checkRangeForHack);
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// SECTION GESTION DE LA BATTERIE
 		if (_isInCallWithMom)

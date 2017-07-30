@@ -160,5 +160,6 @@
     <pnj id="97" x="368" y="208" />
     <pnj id="98" x="384" y="208" />
     <pnj id="99" x="384" y="192" />
+    <powerup id="100" x="64" y="368" />
   </entities>
 </level>
