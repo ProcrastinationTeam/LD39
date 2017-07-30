@@ -101,7 +101,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-
+		
 		var batteryLevel:Int = Math.round(_battery._batteryLevel);
 		_batteryBar.value = batteryLevel;
 		_batteryText.text = batteryLevel + "%";
@@ -126,7 +126,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
 		_staminaBar.value = _player._currentStamina;
 
-		_bullyDelayBar.value = 0.5 - _player._currentBullyCooldown;
+		_bullyDelayBar.value = Tweaking.playerBullyingDelay - _player._currentBullyCooldown;
 	}
 
 	/**

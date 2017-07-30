@@ -5,15 +5,16 @@ import flixel.FlxSprite;
 
 class Battery extends FlxSprite
 {
-	public static var instance(default, null): Battery = new Battery();
+	public static var instance(default, null): Battery;
 	
 	public var _batteryLevel								: Float = 50;
 	public var _numberOfHackersHacking 						: Int = 0;
 
 	// Constructeur privé pour singletoniser
-	private function new()
+	public function new()
 	{
 		super();
+		instance = this;
 	}
 	
 	// "Constructeur" (pour init les valeurs de la batterie), à appeller pour relancer une partie
@@ -26,7 +27,7 @@ class Battery extends FlxSprite
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-
+		
 		// La batterie diminue toute seule par défaut
 		_batteryLevel -= Tweaking.batteryDecreaseRatePerSecond * elapsed * (_batteryLevel < Tweaking.batteryLowBatteryThreshold ? Tweaking.batteryLowBatterySaverMultiplier : 1);
 		

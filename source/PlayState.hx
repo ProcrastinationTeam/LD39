@@ -6,10 +6,13 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
+import flixel.group.FlxGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
 
 class PlayState extends FlxState
 {
@@ -24,10 +27,12 @@ class PlayState extends FlxState
 
 	private var _hud 								: HUD;
 
+	private var _currentLevelId						: Int;
+
 	// Variables pour le call de maman
 	private var _isInCallWithMom					: Bool = false;
 	private var _lastCallWithMomDelay				: Float = 0;
-	
+
 	// TODO: ajouter une mécanique de décrochage ?
 	//private var _momIsCalling						: Bool = false;
 
@@ -36,11 +41,19 @@ class PlayState extends FlxState
 	private var _npcs								: FlxTypedGroup<PNJ>;
 	private var _powerups							: FlxTypedGroup<PowerUp>;
 
+	private var _maxiGroup 							: FlxTypedGroup<FlxSprite>;
+
 	// Debug variable
 	private var _counterHacker 						: Int = 0;
 	private var _counterPnj							: Int = 0;
 
 	private var _showWifi 							: Bool = false;
+
+	public function new(levelId:Int)
+	{
+		super();
+		_currentLevelId = levelId;
+	}
 
 	override public function create():Void
 	{
@@ -51,8 +64,20 @@ class PlayState extends FlxState
 		_exit.alpha = 0;
 		add(_exit);
 
+		if (_currentLevelId == 1)
+		{
+			_map = new FlxOgmoLoader(AssetPaths.level1__oel);
+		}
+		else if (_currentLevelId == 2)
+		{
+			_map = new FlxOgmoLoader(AssetPaths.level2__oel);
+		}
+		else {
+			// par défaut, surtout debug au cas ou
+			_map = new FlxOgmoLoader(AssetPaths.level1__oel);
+		}
+
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
-		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
 		_walls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
 		_walls.follow(FlxG.camera, 1);
 		_walls.setTileProperties(1, FlxObject.NONE);
@@ -83,18 +108,18 @@ class PlayState extends FlxState
 		add(_powerups);
 		
 		_player = new Player();
-		add(_player);
+		//add(_player);
 
 		_hackers = new FlxTypedGroup<Hacker>();
-		add(_hackers);
+		//add(_hackers);
 
 		_npcs = new FlxTypedGroup<PNJ>();
-		add(_npcs);
+		//add(_npcs);
 
 		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
 
-		_battery = Battery.instance;
+		_battery = new Battery();
 		// TODO: Fixer des valeurs, et les sortir d'ici
 		_battery.initBattery(FlxG.random.float(40, 60));
 		// Même si elle n'a pas de sprite à afficher, il faut l'ajouter au state sinon ça fonctionne pas (le update se lance pas ?)
@@ -108,6 +133,23 @@ class PlayState extends FlxState
 		var hudCam = new FlxCamera(0, 0, 64, 480, 1);
 		FlxG.cameras.add(hudCam);
 
+		_maxiGroup = new FlxTypedGroup<FlxSprite>();
+
+		_maxiGroup.add(_player);
+		_hackers.forEachAlive(function(hacker:Hacker)
+		{
+			_maxiGroup.add(hacker);
+		});
+		_npcs.forEachAlive(function(pnj:PNJ)
+		{
+			_maxiGroup.add(pnj);
+		});
+		_powerups.forEachAlive(function(powerUp:PowerUp)
+		{
+			_maxiGroup.add(powerUp);
+		});
+		add(_maxiGroup);
+
 		// HUD (partie gauche)
 		_hud = new HUD(_player);
 		add(_hud);
@@ -115,6 +157,8 @@ class PlayState extends FlxState
 		// ZONE DE DEBUG
 		FlxG.watch.add(_battery, "_numberOfHackersHacking" );
 		// FIN DE ZONE DE DEBUG
+		
+		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
 	}
@@ -178,6 +222,8 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+
+		_maxiGroup.sort(FlxSort.byY);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,6 +321,19 @@ class PlayState extends FlxState
 			if (FlxG.keys.justPressed.B)
 			{
 				_hackers.forEachAlive(TryToBullyFreely);
+			}
+
+			if (FlxG.keys.justPressed.E)
+			{
+				if (_currentLevelId == 1) {
+					_player.x = 595;
+					_player.y = 60;
+				} else if (_currentLevelId == 2) {
+					_player.x = 600;
+					_player.y = 440;
+				} else {
+					// ?
+				}
 			}
 		}
 		////////////////////////////////////////////////// FIN SECTION DEBUG
@@ -406,6 +465,33 @@ class PlayState extends FlxState
 	public function gameOver(won:Bool):Void
 	{
 		// TODO: gérer le multi niveaux
-		FlxG.switchState(new GameOverState(won));
+		if (won)
+		{
+			if (_currentLevelId == 1)
+			{
+				FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+				{
+					FlxG.switchState(new PlayState(2));
+				});
+			}
+			else if (_currentLevelId == 2)
+			{
+				FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+				{
+					FlxG.switchState(new GameOverState(true));
+				});
+			}
+			else
+			{
+				// TODO: ?
+			}
+		}
+		else {
+			// LOSE
+			FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+			{
+				FlxG.switchState(new GameOverState(false));
+			});
+		}
 	}
 }
