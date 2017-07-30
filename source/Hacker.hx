@@ -105,7 +105,7 @@ class Hacker extends FlxSprite
 		//TODO SI ON A DU TEMPS
 	}
 
-	public function getBullied():Void
+	public function getBullied(player:Player):Void
 	{
 		if (_life > 0)
 		{
