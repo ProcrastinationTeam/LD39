@@ -17,6 +17,8 @@ class PNJ extends FlxSprite
 	private var _brain:FSM;
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
+	
+	public var _initialSpriteName : String;
 
 	public function new(X:Float=0, Y:Float=0, Id : Int)
 	{
@@ -24,7 +26,8 @@ class PNJ extends FlxSprite
 		id = Id;
 
 		//remplacer le EType par un random
-		loadGraphic("assets/images/pnj-1.png", true, 16, 16);
+		_initialSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
+		loadGraphic(_initialSpriteName, true, 16, 16);
 
 		//setFacingFlip(FlxObject.LEFT, false, false);
 		//setFacingFlip(FlxObject.RIGHT, true, false);
