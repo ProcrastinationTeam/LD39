@@ -4,8 +4,13 @@ class Tweaking
 {
 	// HACKER
 	public static inline var hackerVisionDistance 						: Float = 75;
-	public static inline var hackerDistanceToHack 						: Float = 50;
-	public static inline var hackerSpeed								: Float = 140;
+	public static inline var hackerMaxDistanceToHack 					: Float = 50;
+	public static inline var hackerMinDistanceToHack					: Float = 20;
+	public static inline var hackerBestDistanceToHack					: Float = 35;
+	public static inline var hackerSpeed								: Float = 80;
+	
+	// Interaction avec temps
+	public static inline var hackerKnockDownDuration					:Float = 2; // en seconde;
 	
 	// BATTERY
 	public static inline var batteryDecreaseRatePerSecond				: Float = 0.25;
@@ -18,12 +23,15 @@ class Tweaking
 	
 	// PLAYER
 	// Sprint + stamina
-	public static inline var playerWalkingSpeed							: Float = 150;
+	public static inline var playerWalkingSpeed							: Float = 75;
 	public static inline var playerSprintMultiplier						: Float = 1.5;
 	public static inline var playerMaxStamina							: Float = 2;
 	public static inline var playerStaminaRecoveryPerSecond				: Float = 1;
 	public static inline var playerStaminaSprintConsumptionPerSecond	: Float = 1;
 	public static inline var playerDelayAfterEmptyStamina 				: Float = playerStaminaRecoveryPerSecond * playerMaxStamina;
+	
+	// Interaction avec temps
+	public static inline var playerKnockDownDuration					:Float = 2; // en seconde;
 	
 	// Bullying
 	public static inline var playerMinDistanceToBully 					: Int = 20;
@@ -33,6 +41,9 @@ class Tweaking
 	
 	// PNJ
 	public static inline var npcSpeed									: Float = 140;
+	public static inline var npcChanceToHitBack							: Float = 0.05; // Entre 0 et 1
+	
+	
 	
 	// Call avec maman
 	public static inline var momCallDuration							: Float = 3;

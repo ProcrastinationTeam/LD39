@@ -7,6 +7,7 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxVector;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
 
 class PNJ extends FlxSprite 
 {
@@ -33,11 +34,14 @@ class PNJ extends FlxSprite
 		//animation.add("hack", [0, 1, 0], 6, true);
 		animation.add("idle", [0], 6, false);
 		drag.x = drag.y = 10;
-		width = 4;
-		height = 4;
-		offset.x = 6;
-		offset.y = 12;
+		//width = 4;
+		//height = 4;
+		//offset.x = 6;
+		//offset.y = 12;
 
+		setSize(6, 4);
+		offset.set(5, 12);
+		
 		//IA SECTION
 		_brain = new FSM(idle);
 		_idleTmr = 0;
@@ -123,5 +127,14 @@ class PNJ extends FlxSprite
 		vector.normalize();
 		var vectorPoint:FlxPoint = new FlxPoint(vector.x * Tweaking.playerBullyForce, vector.y * Tweaking.playerBullyForce);
 		velocity.addPoint(vectorPoint);
+		
+		var randomizer = FlxG.random.float(0, 1);
+		if (randomizer < Tweaking.npcChanceToHitBack)
+		{	
+			player.getBullied();
+		}
+		
 	}
+	
+	
 }
