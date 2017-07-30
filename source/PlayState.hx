@@ -13,6 +13,8 @@ import flixel.tile.FlxTilemap;
 import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 
 class PlayState extends FlxState
 {
@@ -25,7 +27,8 @@ class PlayState extends FlxState
 
 	private var _exit 								: FlxSprite;
 
-	private var _hud 								: HUD;
+	private var _batteryHud 								: BatteryHUD;
+	private var _phoneHud							: PhoneHUD;
 
 	private var _currentLevelId						: Int;
 
@@ -48,6 +51,13 @@ class PlayState extends FlxState
 	private var _counterPnj							: Int = 0;
 
 	private var _showWifi 							: Bool = false;
+
+	private var _spritePhone 						: FlxSprite;
+
+	private var _phoneIsFullyShown					: Bool = false;
+	
+	private var _batteryHudCam 						: FlxCamera;
+	private var _phoneHudCam 						: FlxCamera;
 
 	public function new(levelId:Int)
 	{
@@ -129,10 +139,6 @@ class PlayState extends FlxState
 		FlxG.camera.follow(_player, LOCKON, 1);
 		FlxG.camera.zoom = 4;
 
-		// Caméra pour le HUD (on sait pas trop comment, mais ça marche)
-		var hudCam = new FlxCamera(0, 0, 64, 480, 1);
-		FlxG.cameras.add(hudCam);
-
 		_maxiGroup = new FlxTypedGroup<FlxSprite>();
 
 		_maxiGroup.add(_player);
@@ -150,14 +156,34 @@ class PlayState extends FlxState
 		});
 		add(_maxiGroup);
 
+		////////////////////////////////////// HUD HUD
 		// HUD (partie gauche)
-		_hud = new HUD(_player);
-		add(_hud);
+		_batteryHud = new BatteryHUD(_player);
+		add(_batteryHud);
+
+		// Caméra pour le HUD (on sait pas trop comment, mais ça marche)
+		_batteryHudCam = new FlxCamera(0, 0, _batteryHud._width, _batteryHud._height, 1);
+		_batteryHudCam.zoom = 1;
+		_batteryHudCam.follow(_batteryHud._backgroundSprite, NO_DEAD_ZONE);
+		FlxG.cameras.add(_batteryHudCam);
+		/////////////////////////////////////
+
+		//////////////////////////////////// PHONE HUD
+		// Telephone HUD
+		_phoneHud = new PhoneHUD(_player);
+		add(_phoneHud);
+
+		// Caméra pour le HUD du téléphone
+		_phoneHudCam = new FlxCamera(448, 448, _phoneHud._width, _phoneHud._height);
+		_phoneHudCam.zoom = 1;
+		_phoneHudCam.follow(_phoneHud._backgroundSprite, NO_DEAD_ZONE);
+		FlxG.cameras.add(_phoneHudCam);
+		////////////////////////////////////
 
 		// ZONE DE DEBUG
 		FlxG.watch.add(_battery, "_numberOfHackersHacking" );
 		// FIN DE ZONE DE DEBUG
-		
+
 		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
@@ -281,7 +307,7 @@ class PlayState extends FlxState
 			{
 				_lastCallWithMomDelay = 0;
 				FlxG.camera.shake(0.005, 0.1);
-				_hud.startCall();
+				_phoneHud.startCall();
 				new FlxTimer().start(Tweaking.momCallDuration, CallWithMomEndend);
 				new FlxTimer().start(Tweaking.momCallDelayBetweenScreenShakes, CallScreenShake, Std.int(Tweaking.momCallDuration));
 			}
@@ -293,8 +319,15 @@ class PlayState extends FlxState
 		// Il faut obligatoirement avoir SHIFT d'enfoncer pour utiliser ces fonctions de debug
 		if (FlxG.keys.pressed.SHIFT)
 		{
-			// Contrôle du niveau de la batterie avec la molette
-			_battery._batteryLevel += FlxG.mouse.wheel;
+			if (FlxG.keys.pressed.ALT)
+			{
+				// Contrôle du niveau de la batterie avec la molette
+				_battery._batteryLevel += FlxG.mouse.wheel;
+			}
+			else
+			{
+				FlxG.camera.zoom += FlxG.mouse.wheel / 20.;
+			}
 
 			// Test call avec maman
 			if (FlxG.keys.justPressed.C)
@@ -303,11 +336,11 @@ class PlayState extends FlxState
 
 				if (_isInCallWithMom)
 				{
-					_hud.startCall();
+					_phoneHud.startCall();
 				}
 				else
 				{
-					_hud.endCall();
+					_phoneHud.endCall();
 				}
 			}
 
@@ -323,17 +356,37 @@ class PlayState extends FlxState
 				_hackers.forEachAlive(TryToBullyFreely);
 			}
 
+			// Aller direct à l'exit
 			if (FlxG.keys.justPressed.E)
 			{
-				if (_currentLevelId == 1) {
+				if (_currentLevelId == 1)
+				{
 					_player.x = 595;
 					_player.y = 60;
-				} else if (_currentLevelId == 2) {
+				}
+				else if (_currentLevelId == 2)
+				{
 					_player.x = 600;
 					_player.y = 440;
-				} else {
+				}
+				else
+				{
 					// ?
 				}
+			}
+
+			// Fait apparaitre le tel
+			if (FlxG.keys.justPressed.T)
+			{
+				if (_phoneIsFullyShown)
+				{
+					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height }, 0.3, { ease: FlxEase.quadInOut });
+				}
+				else
+				{
+					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height }, 0.3, { ease: FlxEase.quadInOut });
+				}
+				_phoneIsFullyShown = !_phoneIsFullyShown;
 			}
 		}
 		////////////////////////////////////////////////// FIN SECTION DEBUG
@@ -428,7 +481,7 @@ class PlayState extends FlxState
 	private function CallWithMomEndend(Timer:FlxTimer):Void
 	{
 		_isInCallWithMom = false;
-		_hud.endCall();
+		_phoneHud.endCall();
 	}
 
 	/**
