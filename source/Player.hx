@@ -149,8 +149,6 @@ class Player extends FlxSprite
 				else if (_right) {
 					_ma += 45;
 				}
-
-				facing = FlxObject.UP;
 			}
 			else if (_down)
 			{
@@ -161,8 +159,6 @@ class Player extends FlxSprite
 				else if (_right) {
 					_ma -= 45;
 				}
-
-				facing = FlxObject.DOWN;
 			}
 			else if (_left)
 			{
@@ -172,6 +168,15 @@ class Player extends FlxSprite
 			else if (_right)
 			{
 				_ma = 0;
+				facing = FlxObject.RIGHT;
+			}
+			
+			if (_left)
+			{
+				facing = FlxObject.LEFT;
+			}
+			else if (_right)
+			{
 				facing = FlxObject.RIGHT;
 			}
 			
@@ -196,12 +201,6 @@ class Player extends FlxSprite
 						{
 							animation.play("walk");
 						}
-				
-				/*switch (facing)
-				{
-					case FlxObject.LEFT, FlxObject.RIGHT, FlxObject.UP, FlxObject.DOWN:
-						
-				}*/
 			}
 			
 		}
