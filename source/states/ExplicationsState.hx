@@ -7,16 +7,22 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.addons.text.FlxTypeText;
 import flixel.util.FlxTimer;
+import flixel.system.FlxSound;
 
 class ExplicationsState extends FlxState
 {
 
 	private var _hurryText 							: FlxTypeText;
 	private var _startDisplay						: FlxText;
-
-	private var _step								: Int = 0;
+	
+	private var _soundFadeIn						: FlxSound;
+	private var _soundFadeOut						: FlxSound;
+	
 	override public function create():Void
 	{
+		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
+		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
+		
 		_startDisplay = new FlxText(0, 0, 0, "Click or press SPACE to skip (not recommended)", 18, true);
 		_startDisplay.screenCenter();
 		_startDisplay.y = 440;
@@ -31,6 +37,7 @@ class ExplicationsState extends FlxState
 		});
 		add(_hurryText);
 
+		_soundFadeIn.play();
 		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
@@ -42,6 +49,7 @@ class ExplicationsState extends FlxState
 
 		if (FlxG.mouse.justPressed || FlxG.keys.justPressed.SPACE)
 		{
+			_soundFadeOut.play();
 			FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 			{
 				FlxG.switchState(new PlayState(TUTO));

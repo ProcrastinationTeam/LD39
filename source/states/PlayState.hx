@@ -80,6 +80,9 @@ class PlayState extends FlxState
 	
 	private var _phoneHudTop						: Float;
 	private var _phoneHudBottom						: Float;
+	
+	private var _soundFadeIn						: FlxSound;
+	private var _soundFadeOut						: FlxSound;
 
 	public function new(level:Levels)
 	{
@@ -93,6 +96,9 @@ class PlayState extends FlxState
 		//FlxG.mouse.visible = false;
 
 		_soundNewMessage = FlxG.sound.load(AssetPaths.new_message_received__wav);
+		
+		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
+		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
 		
 		_exit = new FlxSprite();
 		_exit.alpha = 0;
@@ -232,6 +238,7 @@ class PlayState extends FlxState
 		_phoneHudTop = _phoneHudCam.y - _phoneHud._height + 32;
 		_phoneHudBottom = _phoneHudCam.y;
 
+		_soundFadeIn.play();
 		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 		_batteryHudCam.fade(FlxColor.BLACK, .2, true);
 		_phoneHudCam.fade(FlxColor.BLACK, .2, true);
@@ -685,6 +692,7 @@ class PlayState extends FlxState
 		// TODO: gérer le multi niveaux
 		if (won)
 		{
+			_soundFadeOut.play();
 			_batteryHudCam.fade(FlxColor.BLACK, .2, false);
 			_phoneHudCam.fade(FlxColor.BLACK, .2, false);
 			switch (_currentLevel)
@@ -719,6 +727,7 @@ class PlayState extends FlxState
 		}
 		else {
 			// LOSE
+			_soundFadeOut.play();
 			FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 			{
 				//TODO: reset que le niveau actuel ?
