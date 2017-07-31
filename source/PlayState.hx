@@ -361,7 +361,6 @@ class PlayState extends FlxState
 			if (FlxG.random.bool(1))
 			{
 				_momMessagesCount++;
-				_soundNewMessage.play();
 				_lastMessageFromMomDelay = 0;
 				if (_momMessagesCount > Tweaking.momMessagesThreshold)
 				{
@@ -373,11 +372,12 @@ class PlayState extends FlxState
 					_phoneHud.startCall();
 					_phoneHudCam.shake(0.05, Tweaking.momCallDuration);
 					new FlxTimer().start(Tweaking.momCallDuration, CallWithMomEndend);
-					new FlxTimer().start(Tweaking.momCallDelayBetweenScreenShakes, CallScreenShake, Std.int(Tweaking.momCallDuration));
+					//new FlxTimer().start(Tweaking.momCallDelayBetweenScreenShakes, CallScreenShake, Std.int(Tweaking.momCallDuration));
 				}
 				else
 				{
 					// TODO: Screenshake parce que reçu message + anima du HUD
+					_soundNewMessage.play();
 				}
 			}
 		}
