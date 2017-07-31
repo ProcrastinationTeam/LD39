@@ -389,6 +389,7 @@ class PlayState extends FlxState
 				{
 					// Appel de maman
 					_isInCallWithMom = true;
+					_player._isInCallWithMom = true;
 					_momMessagesCount = 0;
 					_lastCallWithMomDelay = 0;
 					_player._isOnHisPhone = true;
@@ -630,6 +631,7 @@ class PlayState extends FlxState
 	private function CallWithMomEndend(Timer:FlxTimer):Void
 	{
 		_isInCallWithMom = false;
+		_player._isInCallWithMom = false;
 		_player._isOnHisPhone = false;
 		FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 		_phoneHud.endCall();
