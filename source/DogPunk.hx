@@ -38,6 +38,7 @@ class DogPunk extends FlxSprite
 	//public var _hackerSpriteName 							: String = "assets/images/enemy-2.png";
 	
 	public var _heyYouSound									: FlxSound;
+	public var _tabasseSound								: FlxSound;
 
 	//DEBUG LOG
 	public var distance 									: Int;
@@ -75,6 +76,7 @@ class DogPunk extends FlxSprite
 		_initialPos = new FlxPoint(X, Y);
 		
 		_heyYouSound = FlxG.sound.load(AssetPaths.hey_you__wav);
+		_tabasseSound = FlxG.sound.load(AssetPaths.bully_tabasse__wav);
 
 	}
 
@@ -218,9 +220,10 @@ class DogPunk extends FlxSprite
 		else
 		{
 			trace("I SEE U");
-			FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.hackerSpeed)); 
+			FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.dogPunkSpeed)); 
 			if (distance < Tweaking.dogpunkDistanceToHit && _canBully)
 			{
+				_tabasseSound.play();
 				_playerInstance.getBulliedByDogpunk();
 				_isOffensive = false;
 				_canBully = false;
@@ -236,7 +239,7 @@ class DogPunk extends FlxSprite
 	{
 		
 		var o : FlxPoint = new	FlxPoint(130, 100);
-		FlxVelocity.moveTowardsPoint(this, _initialPos , Std.int(Tweaking.hackerSpeed));
+		FlxVelocity.moveTowardsPoint(this, _initialPos , Std.int(Tweaking.dogPunkSpeed));
 		_brain.activeState = idle;
 		
 	}

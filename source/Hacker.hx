@@ -7,6 +7,7 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxVector;
 import flixel.math.FlxVelocity;
 import flixel.util.FlxTimer;
+import flixel.system.FlxSound;
 
 class Hacker extends FlxSprite
 {
@@ -32,6 +33,8 @@ class Hacker extends FlxSprite
 
 	//DEBUG LOG
 	public var distance 									: Int;
+	
+	public var _pnjTabasseSound								: FlxSound;
 
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int, Id : Int)
@@ -63,7 +66,8 @@ class Hacker extends FlxSprite
 
 		//DEBUG SECTION
 		//	FlxG.watch.add(this, "_life", "Player " + this.id + " :");
-
+		
+		_pnjTabasseSound = FlxG.sound.load(AssetPaths.pnj_tabasse__wav);
 	}
 
 	override public function draw():Void
@@ -117,6 +121,7 @@ class Hacker extends FlxSprite
 	public function getBullied(player:Player):Void
 	{
 		_isAbleToMove = false;
+		_pnjTabasseSound.play();
 		new FlxTimer().start(Tweaking.hackerKnockDownDuration, HackerWakeUpAfterBullied);
 
 		if (_actualSpriteName != _hackerSpriteName)

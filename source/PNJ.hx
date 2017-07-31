@@ -8,6 +8,7 @@ import flixel.math.FlxVector;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
+import flixel.system.FlxSound;
 
 class PNJ extends FlxSprite 
 {
@@ -19,6 +20,8 @@ class PNJ extends FlxSprite
 	private var _moveDir:Float;
 	
 	public var _actualSpriteName 							: String;
+	
+	public var _pnjTabasseSound								: FlxSound;
 
 	public function new(X:Float=0, Y:Float=0, Id : Int)
 	{
@@ -44,6 +47,7 @@ class PNJ extends FlxSprite
 
 		//DEBUG SECTION
 		//FlxG.watch.add(this, "_life", "Player " + this.id + " :");
+		_pnjTabasseSound = FlxG.sound.load(AssetPaths.pnj_tabasse__wav);
 	}
 	
 	override public function draw():Void
@@ -124,10 +128,15 @@ class PNJ extends FlxSprite
 		vector.normalize();
 		var vectorPoint:FlxPoint = new FlxPoint(vector.x * Tweaking.playerBullyForce, vector.y * Tweaking.playerBullyForce);
 		velocity.addPoint(vectorPoint);
+		_pnjTabasseSound.play(true);
 		
 		var randomizer = FlxG.random.float(0, 1);
 		if (randomizer < Tweaking.npcChanceToHitBack)
 		{	
+			_pnjTabasseSound.play(true);
+			new FlxTimer().start(0.2, function(timer:FlxTimer) {
+				_pnjTabasseSound.play(true);
+			});
 			player.getBullied();
 		}
 		

@@ -18,11 +18,11 @@ class Tweaking
 	public static inline var dogpunkCooldownBully						: Float = 5;
 	
 	// BATTERY
-	public static inline var batteryInitialLevel						: Float = 50;
-	public static inline var batteryDecreaseRatePerSecond				: Float = 0.25;
+	public static inline var batteryInitialLevel						: Float = 98;
+	public static inline var batteryDecreaseRatePerSecond				: Float = 0.4;
 	public static inline var batteryLowBatteryThreshold					: Float = 10;
-	public static inline var batteryLowBatterySaverMultiplier 			: Float = 0.3;
-	public static inline var batteryDecreaseRatePerSecondThroughCall	: Float = 0.5;
+	public static inline var batteryLowBatterySaverMultiplier 			: Float = 0.5;
+	public static inline var batteryDecreaseRatePerSecondThroughCall	: Float = 1;
 	public static inline var batteryDecreaseRatePerSecondPerHacker		: Float = 0.7;
 	
 	public static inline var batteryToAdd								: Float = 10.0;
@@ -69,6 +69,9 @@ class Tweaking
 	public static inline var hackerSprite								: String = "assets/images/MisterHacky.png";
 	public static inline var dogpunkSprite								: String = "assets/images/MisterDougy.png";
 	public static inline var npcSpritePrefix							: String = "assets/images/MisterEverybody-";
+	
+	// Punk à chien
+	public static inline var dogPunkSpeed								: Float = 70;
 	
 	//public static inline var playerSprite								: String = "";
 	//public static inline var playerSprite								: String = "";

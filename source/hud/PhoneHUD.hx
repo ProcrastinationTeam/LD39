@@ -50,6 +50,7 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 	private var _isTexting					: Bool = false;
 
 	private var _soundMom					: FlxSound;
+	private var _soundWifiHacked			: FlxSound;
 	
 	public function new(player:Player)
 	{
@@ -90,10 +91,12 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 		_messageSprite32.animation.add("3", [3, 0], 4, true);
 		add(_messageSprite32);
 
-		_wifiSprite32 = new FlxSprite().loadGraphic(AssetPaths.wifi_32__png, true, 32, 32);
+		//_wifiSprite32 = new FlxSprite().loadGraphic(AssetPaths.wifi_32__png, true, 32, 32);
+		_wifiSprite32 = new FlxSprite().loadGraphic(AssetPaths.wifi_32_mabite__png, true, 32, 32);
 		_wifiSprite32.setPosition(x + 11 + 64 + 6, 32);
 		_wifiSprite32.animation.add("default", [0], 3, true);
-		_wifiSprite32.animation.add("hack", [1, 2, 3, 0], 4, true);
+		//_wifiSprite32.animation.add("hack", [1, 2, 3, 0], 4, true);
+		_wifiSprite32.animation.add("hack", [1, 2, 3], 6, true);
 		_wifiSprite32.animation.play("default");
 		add(_wifiSprite32);
 
@@ -136,13 +139,14 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 		//});
 		//});
 				
-		_textPlayerBackground = new FlxSprite().makeGraphic(Std.int(_textPlayer.width) - 5, Std.int(_textPlayer.height), FlxColor.BLACK);
-		_textPlayerBackground.setPosition(_textPlayer.x, _textPlayer.y);
+		_textPlayerBackground = new FlxSprite().makeGraphic(Std.int(_textPlayer.width) - 15, Std.int(_textPlayer.height), FlxColor.BLACK);
+		_textPlayerBackground.setPosition(_textPlayer.x - 10, _textPlayer.y);
 		_textPlayerBackground.visible = false;
 		add(_textPlayerBackground);
 		add(_textPlayer);
 		
 		_soundMom = FlxG.sound.load(AssetPaths.mom__wav);
+		_soundWifiHacked = FlxG.sound.load(AssetPaths.wifi_hacked__wav);
 
 		//_player = player;
 		_battery = Battery.instance;
@@ -164,6 +168,10 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 			{
 				_wifiSprite32.animation.play("default");
 			}
+		}
+		
+		if (_numberOfHackersHacking > 0) {
+			_soundWifiHacked.play();
 		}
 
 		if (_battery._batteryLevel < Tweaking.batteryLowBatteryThreshold)
