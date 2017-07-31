@@ -9,6 +9,7 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
+import flixel.system.FlxSound;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
@@ -67,6 +68,8 @@ class PlayState extends FlxState
 	private var _batteryHudCam 						: FlxCamera;
 	private var _phoneHudCam 						: FlxCamera;
 
+	private var _soundNewMessage					: FlxSound;
+	
 	public function new(levelId:Int)
 	{
 		super();
@@ -77,6 +80,8 @@ class PlayState extends FlxState
 	{
 		// Pas besoin de la souris pour le jeu (pour le moment en tout cas) donc on la cache
 		//FlxG.mouse.visible = false;
+		
+		_soundNewMessage = FlxG.sound.load(AssetPaths.new_message_received__wav);
 
 		_exit = new FlxSprite();
 		_exit.alpha = 0;
@@ -188,9 +193,10 @@ class PlayState extends FlxState
 		add(_phoneHud);
 
 		// Caméra pour le HUD du téléphone
-		_phoneHudCam = new FlxCamera(448, 448, _phoneHud._width, _phoneHud._height);
+		_phoneHudCam = new FlxCamera(448, 416, _phoneHud._width, _phoneHud._height);
 		_phoneHudCam.zoom = 1;
-		_phoneHudCam.follow(_phoneHud._backgroundSprite, NO_DEAD_ZONE);
+		_phoneHudCam.bgColor = FlxColor.TRANSPARENT;
+		_phoneHudCam.follow(_phoneHud._phoneSprite, NO_DEAD_ZONE);
 		FlxG.cameras.add(_phoneHudCam);
 		////////////////////////////////////
 
@@ -355,72 +361,56 @@ class PlayState extends FlxState
 			if (FlxG.random.bool(1))
 			{
 				_momMessagesCount++;
+				_soundNewMessage.play();
 				_lastMessageFromMomDelay = 0;
-				trace("message recu");
 				if (_momMessagesCount > Tweaking.momMessagesThreshold)
 				{
-					trace("appel de maman, reset");
 					// Appel de maman
 					_isInCallWithMom = true;
 					_momMessagesCount = 0;
 					_lastCallWithMomDelay = 0;
+					_player._isOnHisPhone = true;
 					_phoneHud.startCall();
+					_phoneHudCam.shake(0.05, Tweaking.momCallDuration);
 					new FlxTimer().start(Tweaking.momCallDuration, CallWithMomEndend);
 					new FlxTimer().start(Tweaking.momCallDelayBetweenScreenShakes, CallScreenShake, Std.int(Tweaking.momCallDuration));
 				}
 				else
 				{
 					// TODO: Screenshake parce que reçu message + anima du HUD
-					trace("juste message");
 				}
 			}
 		}
-
-		_lastCallWithMomDelay += elapsed;
-		_lastMessageFromMomDelay += elapsed;
-
-		// Fait apparaitre le tel
-		// TODO: empêcher d'appeler avant la fin
-		// TODO: va disparaitre ?
-		if (FlxG.keys.justPressed.T && _canTweenPhone)
-		{
+		
+		if (_isInCallWithMom && _canTweenPhone && !_phoneIsFullyShown) {
 			_canTweenPhone = false;
-			if (_phoneIsFullyShown)
-			{
-				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenEnded });
-			}
-			else
-			{
-				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenEnded });
-			}
-			_phoneIsFullyShown = !_phoneIsFullyShown;
+			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
 		
-		
-		
+		_lastCallWithMomDelay += elapsed;
+		_lastMessageFromMomDelay += elapsed;
 
 		// Si on reste appuyé sur M pendant X secondes, on reset le nombre de messages envoyés par maman
 		// TODO: empêcher de bouger le player
 		if (FlxG.keys.pressed.M && _phoneIsFullyShown && _momMessagesCount > 0) {
-			trace("mmm");
 			_player._isOnHisPhone = true;
 			_timeSendingMessage += elapsed;
 			if (_timeSendingMessage >= Tweaking.momMessageTimeToSend) {
-				trace("reset messages maman");
 				_momMessagesCount = 0;
 				_timeSendingMessage = 0;
 				_player._isOnHisPhone = false;
-				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
+				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
-		} else if (FlxG.keys.justPressed.M && _momMessagesCount > 0) {
-			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
+		} else if (FlxG.keys.justPressed.M && _momMessagesCount > 0 && _canTweenPhone) {
+			_canTweenPhone = false;
+			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
-		if (FlxG.keys.checkStatus(M, RELEASED)) {
+		if (FlxG.keys.checkStatus(M, RELEASED) && FlxG.keys.checkStatus(T, RELEASED) && !_isInCallWithMom) {
 			_player._isOnHisPhone = false;
 			_timeSendingMessage = 0;
 			if (_phoneIsFullyShown && _canTweenPhone) {
 				_canTweenPhone = false;
-				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
+				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 			// TODO: attendre le minimum de temps et retweener
 		}
@@ -486,6 +476,23 @@ class PlayState extends FlxState
 					// ?
 				}
 			}
+			
+			// Fait apparaitre le tel
+			// TODO: empêcher d'appeler avant la fin
+			// TODO: va disparaitre ?
+			if (FlxG.keys.justPressed.T && _canTweenPhone)
+			{
+				_canTweenPhone = false;
+				if (_phoneIsFullyShown)
+				{
+					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
+				}
+				else
+				{
+					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
+				}
+				_phoneIsFullyShown = !_phoneIsFullyShown;
+			}
 		}
 		////////////////////////////////////////////////// FIN SECTION DEBUG
 
@@ -495,10 +502,6 @@ class PlayState extends FlxState
 			gameOver(false);
 		}
 	}
-	
-	private function phoneTweenEnded(Tween:FlxTween):Void {
-		_canTweenPhone = true;
-	}	
 	
 	private function phoneTweenOpeningEnded(Tween:FlxTween):Void {
 		_canTweenPhone = true;
@@ -593,6 +596,8 @@ class PlayState extends FlxState
 	private function CallWithMomEndend(Timer:FlxTimer):Void
 	{
 		_isInCallWithMom = false;
+		_player._isOnHisPhone = false;
+		FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 		_phoneHud.endCall();
 	}
 

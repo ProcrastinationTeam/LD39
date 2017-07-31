@@ -53,11 +53,11 @@ class Tweaking
 	
 	// Call avec maman
 	public static inline var momMessagesThreshold						: Int = 3;
-	public static inline var momMessagesDelayBetweenTwoMessages			: Float = 3;
+	public static inline var momMessagesDelayBetweenTwoMessages			: Float = 1.5;
 	public static inline var momMessageTimeToSend						: Float = 1;
 	
 	public static inline var momCallDuration							: Float = 3;
-	public static inline var momCallDelayBetweenTwoCalls				: Float = 4;
+	public static inline var momCallDelayBetweenTwoCalls				: Float = 3;
 	public static inline var momCallDelayBetweenScreenShakes			: Float = 0.5;
 	
 	public static inline var phoneOpeningTime							: Float = 0.3;
