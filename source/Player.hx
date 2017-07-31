@@ -136,9 +136,9 @@ class Player extends FlxSprite
 		
 		if (_isAbleToMove)
 		{
-			_up = FlxG.keys.anyPressed([UP, Z]);
+			_up = FlxG.keys.anyPressed([UP, W]);
 			_down = FlxG.keys.anyPressed([DOWN, S]);
-			_left = FlxG.keys.anyPressed([LEFT, Q]);
+			_left = FlxG.keys.anyPressed([LEFT, A]);
 			_right = FlxG.keys.anyPressed([RIGHT, D]);
 		}
 				
