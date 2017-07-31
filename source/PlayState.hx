@@ -372,7 +372,7 @@ class PlayState extends FlxState
 					_lastCallWithMomDelay = 0;
 					_player._isOnHisPhone = true;
 					_phoneHud.startCall();
-					_phoneHudCam.shake(0.05, Tweaking.momCallDuration);
+					_phoneHudCam.shake(0.05, Tweaking.momCallDuration - 0.1);
 					new FlxTimer().start(Tweaking.momCallDuration, CallWithMomEndend);
 					//new FlxTimer().start(Tweaking.momCallDelayBetweenScreenShakes, CallScreenShake, Std.int(Tweaking.momCallDuration));
 				}
