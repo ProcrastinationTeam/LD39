@@ -36,7 +36,7 @@ class Tweaking
 	public static inline var playerDelayAfterEmptyStamina 				: Float = playerStaminaRecoveryPerSecond * playerMaxStamina;
 	
 	// Interaction avec temps
-	public static inline var playerKnockDownDuration					:Float = 2; // en seconde;
+	public static inline var playerKnockDownDuration					: Float = 2; // en seconde;
 	
 	// Bullying
 	public static inline var playerMinDistanceToBully 					: Int = 20;
@@ -44,14 +44,21 @@ class Tweaking
 	public static inline var playerBullyingDelay						: Float = 0.5;
 	public static inline var playerBullyForce							: Float = 100;
 	
+	// Messaging
+	public static inline var playerMessagingMultiplier					: Float = 0.5;
+	
 	// PNJ
 	public static inline var npcSpeed									: Float = 140;
 	public static inline var npcChanceToHitBack							: Float = 0.05; // Entre 0 et 1
 	
-	
-	
 	// Call avec maman
+	public static inline var momMessagesThreshold						: Int = 3;
+	public static inline var momMessagesDelayBetweenTwoMessages			: Float = 3;
+	public static inline var momMessageTimeToSend						: Float = 1;
+	
 	public static inline var momCallDuration							: Float = 3;
 	public static inline var momCallDelayBetweenTwoCalls				: Float = 4;
 	public static inline var momCallDelayBetweenScreenShakes			: Float = 0.5;
+	
+	public static inline var phoneOpeningTime							: Float = 0.3;
 }

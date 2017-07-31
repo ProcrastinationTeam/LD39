@@ -19,6 +19,9 @@ class Player extends FlxSprite
 	public var _canBully							: Bool = true;
 	public var _currentBullyCooldown 				: Float;
 	
+	//
+	public var _isOnHisPhone						: Bool = false;
+	
 	// Polishing
 	public var _stepSound							: FlxSound;
 	
@@ -53,7 +56,7 @@ class Player extends FlxSprite
 		movement();
 		
 		// Gestion de la jauge de stamina (sprint)
-		if (_isSprinting) {
+		if (_isSprinting && velocity.x > 0) {
 			_currentStamina -= elapsed * Tweaking.playerStaminaSprintConsumptionPerSecond;
 		} else {
 			_currentStamina += elapsed * Tweaking.playerStaminaRecoveryPerSecond;
@@ -169,8 +172,16 @@ class Player extends FlxSprite
 				_ma = 0;
 				facing = FlxObject.RIGHT;
 			}
+			
+			var velocityX: Float = 0;
+			if (_isOnHisPhone) {
+				velocityX = Tweaking.playerWalkingSpeed * Tweaking.playerMessagingMultiplier;
+			} else {
+				velocityX = _isSprinting ? Tweaking.playerWalkingSpeed * Tweaking.playerSprintMultiplier : Tweaking.playerWalkingSpeed;
+			}
+			
 
-			velocity.set((_isSprinting ? Tweaking.playerWalkingSpeed * Tweaking.playerSprintMultiplier : Tweaking.playerWalkingSpeed), 0);
+			velocity.set(velocityX, 0);
 			velocity.rotate(FlxPoint.weak(0, 0), _ma);
 
 			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
