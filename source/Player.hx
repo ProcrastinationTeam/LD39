@@ -26,6 +26,7 @@ class Player extends FlxSprite
 	
 	// Polishing
 	public var _stepSound							: FlxSound;
+	public var _aaahSound							: FlxSound;
 	
 	public function new(?X:Float=0, ?Y:Float=0)
 	{
@@ -53,6 +54,8 @@ class Player extends FlxSprite
 		
 		FlxG.watch.add(this, "_currentStamina");
 		FlxG.watch.add(this, "_isSprinting");
+		
+		_aaahSound = FlxG.sound.load(AssetPaths.aaaah__wav);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -73,6 +76,7 @@ class Player extends FlxSprite
 		
 		// Gestion de la jauge de stamina (sprint)
 		if (_isSprinting && (velocity.x != 0 || velocity.y != 0)) {
+			_aaahSound.play();
 			_currentStamina -= elapsed * Tweaking.playerStaminaSprintConsumptionPerSecond;
 		} else {
 			_currentStamina += elapsed * Tweaking.playerStaminaRecoveryPerSecond;

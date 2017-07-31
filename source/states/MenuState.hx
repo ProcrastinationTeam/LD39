@@ -3,7 +3,9 @@ package states;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.text.FlxTypeText;
 import flixel.text.FlxText;
+import states.ExplicationsState;
 
 class MenuState extends FlxState
 {
@@ -12,7 +14,7 @@ class MenuState extends FlxState
 	public var _moreCredit 			: FlxText;
 	public var _startDisplay 		: FlxText;
 	public var _alphaModifier 		: Float;
-
+	
 	override public function create():Void
 	{
 		_alphaModifier = 0;
@@ -22,7 +24,7 @@ class MenuState extends FlxState
 		_titleImage.screenCenter();
 		add(_titleImage);
 
-		_startDisplay = new FlxText(0, 0, 0, "Click to start", 18, true);
+		_startDisplay = new FlxText(0, 0, 0, "Click or press SPACE to start", 18, true);
 		_startDisplay.screenCenter();
 		add(_startDisplay);
 
@@ -50,8 +52,7 @@ class MenuState extends FlxState
 		// TODO: Faire que ça marche aussi avec n'importe quelle touche du clavier
 		if (FlxG.mouse.justPressed || FlxG.keys.justPressed.SPACE)
 		{
-			new Battery(Tweaking.batteryInitialLevel);
-			FlxG.switchState(new PlayState(TUTO));
+			FlxG.switchState(new ExplicationsState());
 		}
 	}
 
