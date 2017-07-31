@@ -27,7 +27,7 @@ class PlayState extends FlxState
 
 	private var _exit 								: FlxSprite;
 
-	private var _batteryHud 								: BatteryHUD;
+	private var _batteryHud 						: BatteryHUD;
 	private var _phoneHud							: PhoneHUD;
 
 	private var _currentLevelId						: Int;

@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.math.FlxVelocity;
 import flixel.system.FlxSound;
 import flixel.util.FlxTimer;
 
@@ -56,7 +57,7 @@ class Player extends FlxSprite
 		movement();
 		
 		// Gestion de la jauge de stamina (sprint)
-		if (_isSprinting && velocity.x > 0) {
+		if (_isSprinting && (velocity.x != 0 || velocity.y != 0)) {
 			_currentStamina -= elapsed * Tweaking.playerStaminaSprintConsumptionPerSecond;
 		} else {
 			_currentStamina += elapsed * Tweaking.playerStaminaRecoveryPerSecond;
