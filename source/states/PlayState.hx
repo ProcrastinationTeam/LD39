@@ -110,7 +110,7 @@ class PlayState extends FlxState
 				new Battery(Tweaking.batteryInitialLevel);
 				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
 			case LEVEL_1 :
-				_map = new FlxOgmoLoader(AssetPaths.level_1__oel);
+				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
 				_map = new FlxOgmoLoader(AssetPaths.level_2__oel);
 			case LEVEL_3 :
@@ -120,9 +120,44 @@ class PlayState extends FlxState
 		}
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
-		_walls = _map.loadTilemap(AssetPaths.tileset__png, 16, 16, "background");
+		_walls = _map.loadTilemap(AssetPaths.tO__png, 16, 16, "background");
+	
 		_walls.follow(FlxG.camera, 1);
-		_walls.setTileProperties(1, FlxObject.NONE);
+		
+		_walls.setTileProperties(194, FlxObject.ANY);
+		_walls.setTileProperties(196, FlxObject.ANY);
+		_walls.setTileProperties(306, FlxObject.ANY);
+		_walls.setTileProperties(342, FlxObject.ANY);
+		_walls.setTileProperties(343, FlxObject.ANY);
+		_walls.setTileProperties(888, FlxObject.NONE);
+		_walls.setTileProperties(925, FlxObject.NONE);
+		_walls.setTileProperties(926, FlxObject.NONE);
+		_walls.setTileProperties(927, FlxObject.NONE);
+		_walls.setTileProperties(962, FlxObject.NONE);
+		_walls.setTileProperties(963, FlxObject.NONE);
+		_walls.setTileProperties(964, FlxObject.NONE);
+		
+		_walls.setTileProperties(1000, FlxObject.NONE);
+		_walls.setTileProperties(1001, FlxObject.NONE);
+		_walls.setTileProperties(902, FlxObject.NONE);
+		_walls.setTileProperties(795, FlxObject.NONE);
+		_walls.setTileProperties(794, FlxObject.NONE);
+		_walls.setTileProperties(898, FlxObject.NONE);
+		_walls.setTileProperties(901, FlxObject.NONE);
+		_walls.setTileProperties(789, FlxObject.NONE);
+		_walls.setTileProperties(827, FlxObject.NONE);
+		_walls.setTileProperties(907, FlxObject.NONE);
+		
+		_foreground = _map.loadTilemap(AssetPaths.tO__png, 16, 16, "foreground");
+		
+		_foreground.setTileProperties(403, FlxObject.ANY);
+		_foreground.setTileProperties(440, FlxObject.ANY);
+		_foreground.setTileProperties(440, FlxObject.ANY);
+		_foreground.setTileProperties(440, FlxObject.ANY);
+		_foreground.setTileProperties(440, FlxObject.ANY);
+		
+		
+		/*_walls.setTileProperties(1, FlxObject.NONE);
 		_walls.setTileProperties(2, FlxObject.NONE);
 		_walls.setTileProperties(4, FlxObject.NONE);
 		_walls.setTileProperties(5, FlxObject.NONE);
@@ -143,8 +178,9 @@ class PlayState extends FlxState
 		_walls.setTileProperties(9, FlxObject.ANY);
 		_walls.setTileProperties(75, FlxObject.ANY);
 		_walls.setTileProperties(76, FlxObject.ANY);
-		_walls.setTileProperties(77, FlxObject.ANY);
+		_walls.setTileProperties(77, FlxObject.ANY);*/
 		add(_walls);
+		add(_foreground);
 
 		_powerups = new FlxTypedGroup<PowerUp>();
 		add(_powerups);
@@ -298,6 +334,7 @@ class PlayState extends FlxState
 		FlxG.watch.add(hacker, "distance", "Distance between me and hacker " + hacker.id +" : ");
 		if (_walls.ray(hacker.getMidpoint(), _player.getMidpoint()) && hacker.distance < Tweaking.hackerVisionDistance)
 		{
+			trace("HACKER SEE YOU");
 			hacker._seesPlayer = true;
 			hacker._playerPosition.copyFrom(_player.getMidpoint());
 		}
@@ -350,6 +387,7 @@ class PlayState extends FlxState
 
 		// PNJ
 		FlxG.collide(_npcs, _walls);
+		FlxG.collide(_npcs, _foreground);
 		FlxG.collide(_npcs, _npcs);
 
 		// HACKER (ENEMY)
