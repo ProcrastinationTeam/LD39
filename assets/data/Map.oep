@@ -13,7 +13,7 @@
     <Height>480</Height>
   </LevelMinimumSize>
   <LevelMaximumSize>
-    <Width>640</Width>
+    <Width>1280</Width>
     <Height>480</Height>
   </LevelMaximumSize>
   <Filename>C:\Users\Lucas\Desktop\GameJam\LD39\assets\data\Map.oep</Filename>
@@ -66,6 +66,15 @@
     <Tileset>
       <Name>tiles</Name>
       <FilePath>..\images\tileset.png</FilePath>
+      <TileSize>
+        <Width>16</Width>
+        <Height>16</Height>
+      </TileSize>
+      <TileSep>0</TileSep>
+    </Tileset>
+    <Tileset>
+      <Name>FinalTile</Name>
+      <FilePath>..\images\tO.png</FilePath>
       <TileSize>
         <Width>16</Width>
         <Height>16</Height>

@@ -39,7 +39,7 @@ class Player extends FlxSprite
 		animation.add("walk", [0, 1, 2, 1], 6, true);
 		animation.add("run", [4, 3], 6, true);
 		animation.add("text", [5, 6], 6, true);
-		animation.add("call", [7, 8, 9], 6, true);
+		animation.add("call", [7, 8], 6, true);
 		
 
 		drag.x = drag.y = 1600;
