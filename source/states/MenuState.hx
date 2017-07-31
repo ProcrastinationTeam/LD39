@@ -20,10 +20,15 @@ class MenuState extends FlxState
 	private var _soundFadeIn						: FlxSound;
 	private var _soundFadeOut						: FlxSound;
 	
+	private var _soundMusic							: FlxSound;
+	
 	override public function create():Void
 	{
 		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
 		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
+		
+		_soundMusic = FlxG.sound.load(AssetPaths.satanic_pasbien__ogg);
+		FlxG.sound.playMusic(AssetPaths.satanic_pasbien__ogg, 0.3, true);
 		
 		_alphaModifier = 0;
 
