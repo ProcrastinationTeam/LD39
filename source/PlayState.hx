@@ -31,7 +31,7 @@ class PlayState extends FlxState
 	private var _batteryHud 						: BatteryHUD;
 	private var _phoneHud							: PhoneHUD;
 
-	private var _currentLevelId						: Int;
+	private var _currentLevel						: Levels;
 
 	// Variables pour le call de maman
 	private var _isInCallWithMom					: Bool = false;
@@ -40,7 +40,7 @@ class PlayState extends FlxState
 	private var _momMessagesCount					: Int = 0;
 	private var _lastMessageFromMomDelay			: Float = 0;
 	private var _timeSendingMessage					: Float = 0;
-	
+
 	private var _canTweenPhone						: Bool = true;
 
 	// TODO: ajouter une mécanique de décrochage ?
@@ -69,35 +69,36 @@ class PlayState extends FlxState
 	private var _phoneHudCam 						: FlxCamera;
 
 	private var _soundNewMessage					: FlxSound;
-	
-	public function new(levelId:Int)
+
+	public function new(level:Levels)
 	{
 		super();
-		_currentLevelId = levelId;
+		_currentLevel = level;
 	}
 
 	override public function create():Void
 	{
 		// Pas besoin de la souris pour le jeu (pour le moment en tout cas) donc on la cache
 		//FlxG.mouse.visible = false;
-		
+
 		_soundNewMessage = FlxG.sound.load(AssetPaths.new_message_received__wav);
 
 		_exit = new FlxSprite();
 		_exit.alpha = 0;
 		add(_exit);
 
-		if (_currentLevelId == 1)
+		switch (_currentLevel)
 		{
-			_map = new FlxOgmoLoader(AssetPaths.level1__oel);
-		}
-		else if (_currentLevelId == 2)
-		{
-			_map = new FlxOgmoLoader(AssetPaths.level2__oel);
-		}
-		else {
-			// par défaut, surtout debug au cas ou
-			_map = new FlxOgmoLoader(AssetPaths.level1__oel);
+			case TUTO :
+				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
+			case LEVEL_1 :
+				_map = new FlxOgmoLoader(AssetPaths.level_1__oel);
+			case LEVEL_2 :
+				_map = new FlxOgmoLoader(AssetPaths.level_2__oel);
+			case LEVEL_3 :
+				_map = new FlxOgmoLoader(AssetPaths.level_3__oel);
+			case END :
+				_map = new FlxOgmoLoader(AssetPaths.end__oel);
 		}
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
@@ -144,9 +145,10 @@ class PlayState extends FlxState
 		// Spawing des entités (player + hackers + NPCs)
 		_map.loadEntities(placeEntities, "entities");
 
-		_battery = new Battery();
+		//_battery = Battery.instance;
+		_battery = new Battery(Battery.instance._batteryLevel);
 		// TODO: Fixer des valeurs, et les sortir d'ici
-		_battery.initBattery(FlxG.random.float(40, 60));
+		//_battery.initBattery(FlxG.random.float(40, 60));
 		// Même si elle n'a pas de sprite à afficher, il faut l'ajouter au state sinon ça fonctionne pas (le update se lance pas ?)
 		add(_battery);
 
@@ -381,40 +383,47 @@ class PlayState extends FlxState
 				}
 			}
 		}
-		
-		if (_isInCallWithMom && _canTweenPhone && !_phoneIsFullyShown) {
+
+		if (_isInCallWithMom && _canTweenPhone && !_phoneIsFullyShown)
+		{
 			_canTweenPhone = false;
 			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
-		
+
 		_lastCallWithMomDelay += elapsed;
 		_lastMessageFromMomDelay += elapsed;
 
 		// Si on reste appuyé sur M pendant X secondes, on reset le nombre de messages envoyés par maman
 		// TODO: empêcher de bouger le player
-		if (FlxG.keys.pressed.M && _phoneIsFullyShown && _momMessagesCount > 0) {
+		if (FlxG.keys.pressed.M && _phoneIsFullyShown && _momMessagesCount > 0)
+		{
 			_player._isOnHisPhone = true;
 			_timeSendingMessage += elapsed;
-			if (_timeSendingMessage >= Tweaking.momMessageTimeToSend) {
+			if (_timeSendingMessage >= Tweaking.momMessageTimeToSend)
+			{
 				_momMessagesCount = 0;
 				_timeSendingMessage = 0;
 				_player._isOnHisPhone = false;
 				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
-		} else if (FlxG.keys.justPressed.M && _momMessagesCount > 0 && _canTweenPhone) {
+		}
+		else if (FlxG.keys.justPressed.M && _momMessagesCount > 0 && _canTweenPhone)
+		{
 			_canTweenPhone = false;
 			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
-		if (FlxG.keys.checkStatus(M, RELEASED) && FlxG.keys.checkStatus(T, RELEASED) && !_isInCallWithMom) {
+		if (FlxG.keys.checkStatus(M, RELEASED) && FlxG.keys.checkStatus(T, RELEASED) && !_isInCallWithMom)
+		{
 			_player._isOnHisPhone = false;
 			_timeSendingMessage = 0;
-			if (_phoneIsFullyShown && _canTweenPhone) {
+			if (_phoneIsFullyShown && _canTweenPhone)
+			{
 				_canTweenPhone = false;
 				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 			// TODO: attendre le minimum de temps et retweener
 		}
-		
+
 		_phoneHud.updatePhoneHUD(_momMessagesCount);
 
 		/////////////////////////////////////////////////////////////////////// SECTION DEBUG
@@ -461,22 +470,24 @@ class PlayState extends FlxState
 			// Aller direct à l'exit
 			if (FlxG.keys.justPressed.E)
 			{
-				if (_currentLevelId == 1)
+				switch (_currentLevel)
 				{
-					_player.x = 595;
-					_player.y = 60;
-				}
-				else if (_currentLevelId == 2)
-				{
-					_player.x = 600;
-					_player.y = 440;
-				}
-				else
-				{
-					// ?
+					case TUTO :
+						_player.x = 320;
+						_player.y = 208;
+					case LEVEL_1 :
+						_player.x = 595;
+						_player.y = 60;
+					case LEVEL_2 :
+						_player.x = 600;
+						_player.y = 440;
+					case LEVEL_3 :
+						_player.x = 304;
+						_player.y = 176;
+					case END :
 				}
 			}
-			
+
 			// Fait apparaitre le tel
 			// TODO: empêcher d'appeler avant la fin
 			// TODO: va disparaitre ?
@@ -502,13 +513,15 @@ class PlayState extends FlxState
 			gameOver(false);
 		}
 	}
-	
-	private function phoneTweenOpeningEnded(Tween:FlxTween):Void {
+
+	private function phoneTweenOpeningEnded(Tween:FlxTween):Void
+	{
 		_canTweenPhone = true;
 		_phoneIsFullyShown = true;
 	}
-	
-	private function phoneTweenClosingEnded(Tween:FlxTween):Void {
+
+	private function phoneTweenClosingEnded(Tween:FlxTween):Void
+	{
 		_canTweenPhone = true;
 		_phoneIsFullyShown = false;
 	}
@@ -637,29 +650,41 @@ class PlayState extends FlxState
 		// TODO: gérer le multi niveaux
 		if (won)
 		{
-			if (_currentLevelId == 1)
+			switch (_currentLevel)
 			{
-				FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
-				{
-					FlxG.switchState(new PlayState(2));
-				});
-			}
-			else if (_currentLevelId == 2)
-			{
-				FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
-				{
-					FlxG.switchState(new GameOverState(true));
-				});
-			}
-			else
-			{
-				// TODO: ?
+				case TUTO :
+					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					{
+						FlxG.switchState(new PlayState(LEVEL_1));
+					});
+				case LEVEL_1 :
+					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					{
+						FlxG.switchState(new PlayState(LEVEL_2));
+					});
+				case LEVEL_2 :
+					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					{
+						FlxG.switchState(new PlayState(LEVEL_3));
+					});
+				case LEVEL_3 :
+					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					{
+						FlxG.switchState(new PlayState(END));
+					});
+				case END :
+					// TODO
+					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					{
+						FlxG.switchState(new MenuState());
+					});
 			}
 		}
 		else {
 			// LOSE
 			FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 			{
+				//TODO: reset que le niveau actuel ?
 				FlxG.switchState(new GameOverState(false));
 			});
 		}
