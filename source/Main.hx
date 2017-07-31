@@ -10,6 +10,5 @@ class Main extends Sprite
 	{
 		super();
 		addChild(new FlxGame(0, 0, MenuState));
-		FlxG.resizeWindow(100, 100);
 	}
 }
