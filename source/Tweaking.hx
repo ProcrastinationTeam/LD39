@@ -18,6 +18,7 @@ class Tweaking
 	public static inline var dogpunkCooldownBully						: Float = 5;
 	
 	// BATTERY
+	public static inline var batteryInitialLevel						: Float = 50;
 	public static inline var batteryDecreaseRatePerSecond				: Float = 0.25;
 	public static inline var batteryLowBatteryThreshold					: Float = 10;
 	public static inline var batteryLowBatterySaverMultiplier 			: Float = 0.3;

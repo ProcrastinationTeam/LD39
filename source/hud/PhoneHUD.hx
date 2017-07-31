@@ -1,4 +1,4 @@
-package;
+package hud;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -62,7 +62,7 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 		_callSprite32.setPosition(x + 11 + 1, 32);
 		_callSprite32.visible = false;
 		_callSprite32.animation.add("default", [0], 3, true);
-		_callSprite32.animation.add("call", [0, 1, 2, 3], 3, true);
+		_callSprite32.animation.add("call", [0, 1, 2, 3], 4, true);
 		//_callSprite32.animation.play("default");
 		add(_callSprite32);
 		
@@ -70,16 +70,16 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 		_messageSprite32.setPosition(x + 11 + 32 + 3, 32);
 		_messageSprite32.visible = false;
 		_messageSprite32.animation.add("0", [0], 3, true);
-		_messageSprite32.animation.add("1", [0, 1], 3, true);
-		_messageSprite32.animation.add("2", [0, 2], 3, true);
-		_messageSprite32.animation.add("3", [0, 3], 3, true);
+		_messageSprite32.animation.add("1", [1, 0], 4, true);
+		_messageSprite32.animation.add("2", [2, 0], 4, true);
+		_messageSprite32.animation.add("3", [3, 0], 4, true);
 		//_messageSprite32.animation.play("0");
 		add(_messageSprite32);
 		
 		_wifiSprite32 = new FlxSprite().loadGraphic(AssetPaths.wifi_32__png, true, 32, 32);
 		_wifiSprite32.setPosition(x + 11 + 64 + 6, 32);
 		_wifiSprite32.animation.add("default", [0], 3, true);
-		_wifiSprite32.animation.add("hack", [0, 1, 2, 3], 3, true);
+		_wifiSprite32.animation.add("hack", [1, 2, 3, 0], 4, true);
 		_wifiSprite32.animation.play("default");
 		add(_wifiSprite32);
 

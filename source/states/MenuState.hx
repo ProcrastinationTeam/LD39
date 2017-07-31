@@ -1,4 +1,4 @@
-package;
+package states;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -50,7 +50,8 @@ class MenuState extends FlxState
 		// TODO: Faire que ça marche aussi avec n'importe quelle touche du clavier
 		if (FlxG.mouse.justPressed || FlxG.keys.justPressed.SPACE)
 		{
-			FlxG.switchState(new PlayState(1));
+			new Battery(Tweaking.batteryInitialLevel);
+			FlxG.switchState(new PlayState(TUTO));
 		}
 	}
 

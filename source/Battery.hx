@@ -7,22 +7,24 @@ class Battery extends FlxSprite
 {
 	public static var instance(default, null): Battery;
 	
-	public var _batteryLevel								: Float = 50;
-	public var _numberOfHackersHacking 						: Int = 0;
+	public var _batteryLevel								: Float;
+	public var _numberOfHackersHacking 						: Int;
 
 	// Constructeur privé pour singletoniser
-	public function new()
+	public function new(batteryLevel:Float )
 	{
 		super();
 		instance = this;
+		_batteryLevel = batteryLevel;
+		_numberOfHackersHacking = 0;
 	}
 	
 	// "Constructeur" (pour init les valeurs de la batterie), à appeller pour relancer une partie
-	public function initBattery(InitialBatteryValue:Float):Void
-	{
-		_batteryLevel = InitialBatteryValue;
-		_numberOfHackersHacking = 0;
-	}
+	//public function initBattery(InitialBatteryValue:Float):Void
+	//{
+		//_batteryLevel = InitialBatteryValue;
+		//_numberOfHackersHacking = 0;
+	//}
 
 	override public function update(elapsed:Float):Void
 	{
