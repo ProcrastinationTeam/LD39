@@ -22,6 +22,7 @@ class Player extends FlxSprite
 	
 	//
 	public var _isOnHisPhone						: Bool = false;
+	public var _isInCallWithMom						: Bool = false;
 	
 	// Polishing
 	public var _stepSound							: FlxSound;
@@ -37,6 +38,8 @@ class Player extends FlxSprite
 		animation.add("idle", [0], 10, true);
 		animation.add("walk", [0, 1, 2, 1], 6, true);
 		animation.add("run", [4, 3], 6, true);
+		animation.add("text", [5, 6], 6, true);
+		animation.add("call", [7, 8, 9], 6, true);
 		
 
 		drag.x = drag.y = 1600;
@@ -54,6 +57,17 @@ class Player extends FlxSprite
 
 	override public function update(elapsed:Float):Void
 	{
+		//trace(_isInCallWithMom);
+		if (_isInCallWithMom)
+		{
+			animation.play("call");
+		}
+		else if (_isOnHisPhone)
+		{
+			animation.play("text");
+		}
+		
+		
 		// Gestion du mouvement
 		movement();
 		
@@ -187,27 +201,31 @@ class Player extends FlxSprite
 				velocityX = _isSprinting ? Tweaking.playerWalkingSpeed * Tweaking.playerSprintMultiplier : Tweaking.playerWalkingSpeed;
 			}
 			
-
 			velocity.set(velocityX, 0);
 			velocity.rotate(FlxPoint.weak(0, 0), _ma);
-
-			if ((velocity.x != 0 || velocity.y != 0) /*&& touching == FlxObject.NONE*/)
+			if (!_isOnHisPhone && !_isInCallWithMom)
 			{
-				if (_isSprinting)
-						{
-							animation.play("run");
-						}
-						else
-						{
-							animation.play("walk");
-						}
+				
+				if ((velocity.x != 0 || velocity.y != 0) /*&& touching == FlxObject.NONE*/)
+				{
+							if (_isSprinting)
+							{
+								animation.play("run");
+							}
+							else
+							{
+								animation.play("walk");
+							}
+				}
 			}
-			
 		}
 		else
 		{
+			if (!_isOnHisPhone && !_isInCallWithMom)
+			{
 				//trace("NOT MOVING");
-			animation.play("idle");
+				animation.play("idle");
+			}
 		}
 	}
 }
