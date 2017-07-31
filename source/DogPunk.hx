@@ -8,11 +8,8 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxVelocity;
 import flixel.util.FlxTimer;
 import flixel.util.FlxTimer.FlxTimerManager;
+import flixel.system.FlxSound;
 
-/**
- * ...
- * @author ElRyoGrande
- */
 class DogPunk extends FlxSprite 
 {
 
@@ -39,6 +36,8 @@ class DogPunk extends FlxSprite
 	public var _initialPos2									: FlxPoint;
 	//public var _actualSpriteName 							: String;
 	//public var _hackerSpriteName 							: String = "assets/images/enemy-2.png";
+	
+	public var _heyYouSound									: FlxSound;
 
 	//DEBUG LOG
 	public var distance 									: Int;
@@ -74,6 +73,8 @@ class DogPunk extends FlxSprite
 		
 		_initialPos2 = this.getScreenPosition();
 		_initialPos = new FlxPoint(X, Y);
+		
+		_heyYouSound = FlxG.sound.load(AssetPaths.hey_you__wav);
 
 	}
 
@@ -180,6 +181,9 @@ class DogPunk extends FlxSprite
 
 		if (_seesPlayer && _isOffensive)
 		{
+			if (_brain.activeState != chase) {
+				_heyYouSound.play();
+			}
 			_brain.activeState = chase;
 		}
 		/*else if (_idleTmr <= 0)

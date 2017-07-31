@@ -3,7 +3,11 @@ package states;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.text.FlxTypeText;
 import flixel.text.FlxText;
+import states.ExplicationsState;
+import flixel.system.FlxSound;
+import flixel.util.FlxColor;
 
 class MenuState extends FlxState
 {
@@ -12,9 +16,15 @@ class MenuState extends FlxState
 	public var _moreCredit 			: FlxText;
 	public var _startDisplay 		: FlxText;
 	public var _alphaModifier 		: Float;
-
+	
+	private var _soundFadeIn						: FlxSound;
+	private var _soundFadeOut						: FlxSound;
+	
 	override public function create():Void
 	{
+		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
+		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
+		
 		_alphaModifier = 0;
 
 		_titleImage = new FlxSprite(0, 0);
@@ -22,7 +32,7 @@ class MenuState extends FlxState
 		_titleImage.screenCenter();
 		add(_titleImage);
 
-		_startDisplay = new FlxText(0, 0, 0, "Click to start", 18, true);
+		_startDisplay = new FlxText(0, 0, 0, "Click or press SPACE to start", 18, true);
 		_startDisplay.screenCenter();
 		add(_startDisplay);
 
@@ -37,6 +47,9 @@ class MenuState extends FlxState
 		add(_moreCredit);
 
 		FlxG.mouse.visible = true;
+		
+		_soundFadeIn.play();
+		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
 	}
@@ -50,8 +63,10 @@ class MenuState extends FlxState
 		// TODO: Faire que ça marche aussi avec n'importe quelle touche du clavier
 		if (FlxG.mouse.justPressed || FlxG.keys.justPressed.SPACE)
 		{
-			new Battery(Tweaking.batteryInitialLevel);
-			FlxG.switchState(new PlayState(TUTO));
+			_soundFadeOut.play();
+			FlxG.camera.fade(FlxColor.BLACK, .2, false, function() {
+				FlxG.switchState(new ExplicationsState());
+			});
 		}
 	}
 

@@ -5,6 +5,8 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import states.ExplicationsState;
+import flixel.system.FlxSound;
 
 class GameOverState extends FlxState
 {
@@ -14,6 +16,11 @@ class GameOverState extends FlxState
 	public var _alphaModifier : Float;
 
 	private var _win:Bool;				// if we won or lost
+	
+	private var _soundLose					: FlxSound;
+	
+	private var _soundFadeIn						: FlxSound;
+	private var _soundFadeOut						: FlxSound;
 
 	/**
 	* Called from PlayState, this will set our win and score variables
@@ -28,6 +35,12 @@ class GameOverState extends FlxState
 
 	override public function create():Void
 	{
+		_soundLose = FlxG.sound.load(AssetPaths.youlose__wav);
+		_soundLose.play();
+		
+		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
+		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
+		
 		_alphaModifier = 0;
 
 		_titleImage = new FlxSprite(0, 0);
@@ -46,6 +59,7 @@ class GameOverState extends FlxState
 		
 		FlxG.mouse.visible = true;
 		
+		_soundFadeIn.play();
 		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
@@ -87,7 +101,8 @@ class GameOverState extends FlxState
 	{
 		FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 		{
-			FlxG.switchState(new MenuState());
+			_soundFadeOut.play();
+			FlxG.switchState(new ExplicationsState());
 		});
 	}
 }

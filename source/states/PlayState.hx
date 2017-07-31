@@ -77,6 +77,12 @@ class PlayState extends FlxState
 	private var _batteryHud 						: BatteryHUD;
 	private var _phoneHud							: PhoneHUD;
 	private var _staminaHud							: StaminaHUD;
+	
+	private var _phoneHudTop						: Float;
+	private var _phoneHudBottom						: Float;
+	
+	private var _soundFadeIn						: FlxSound;
+	private var _soundFadeOut						: FlxSound;
 
 	public function new(level:Levels)
 	{
@@ -90,7 +96,10 @@ class PlayState extends FlxState
 		//FlxG.mouse.visible = false;
 
 		_soundNewMessage = FlxG.sound.load(AssetPaths.new_message_received__wav);
-
+		
+		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
+		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
+		
 		_exit = new FlxSprite();
 		_exit.alpha = 0;
 		add(_exit);
@@ -98,7 +107,8 @@ class PlayState extends FlxState
 		switch (_currentLevel)
 		{
 			case TUTO :
-				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
+				new Battery(Tweaking.batteryInitialLevel);
+				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
 			case LEVEL_1 :
 				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
@@ -260,7 +270,11 @@ class PlayState extends FlxState
 		// ZONE DE DEBUG
 		FlxG.watch.add(_battery, "_numberOfHackersHacking" );
 		// FIN DE ZONE DE DEBUG
+		
+		_phoneHudTop = _phoneHudCam.y - _phoneHud._height + 32;
+		_phoneHudBottom = _phoneHudCam.y;
 
+		_soundFadeIn.play();
 		FlxG.camera.fade(FlxColor.BLACK, .2, true);
 		_batteryHudCam.fade(FlxColor.BLACK, .2, true);
 		_phoneHudCam.fade(FlxColor.BLACK, .2, true);
@@ -447,7 +461,7 @@ class PlayState extends FlxState
 		if (_isInCallWithMom && _canTweenPhone && !_phoneIsFullyShown)
 		{
 			_canTweenPhone = false;
-			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
+			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudTop }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
 
 		_lastCallWithMomDelay += elapsed;
@@ -464,13 +478,14 @@ class PlayState extends FlxState
 				_momMessagesCount = 0;
 				_timeSendingMessage = 0;
 				_player._isOnHisPhone = false;
-				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
+				_phoneHud.stopWritingSms();
+				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudBottom }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 		}
 		else if (FlxG.keys.justPressed.M && _momMessagesCount > 0 && _canTweenPhone)
 		{
 			_canTweenPhone = false;
-			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
+			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudTop }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
 		if (FlxG.keys.checkStatus(M, RELEASED) && FlxG.keys.checkStatus(T, RELEASED) && !_isInCallWithMom)
 		{
@@ -479,12 +494,13 @@ class PlayState extends FlxState
 			if (_phoneIsFullyShown && _canTweenPhone)
 			{
 				_canTweenPhone = false;
-				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
+				_phoneHud.stopWritingSms();
+				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudBottom }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 			// TODO: attendre le minimum de temps et retweener
 		}
 
-		_phoneHud.updatePhoneHUD(_momMessagesCount);
+		_phoneHud.updatePhoneHUD(_momMessagesCount, _player._isOnHisPhone && !_player._isInCallWithMom);
 
 		/////////////////////////////////////////////////////////////////////// SECTION DEBUG
 		// Il faut obligatoirement avoir SHIFT d'enfoncer pour utiliser ces fonctions de debug
@@ -556,11 +572,11 @@ class PlayState extends FlxState
 				_canTweenPhone = false;
 				if (_phoneIsFullyShown)
 				{
-					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
+					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudBottom }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 				}
 				else
 				{
-					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y - _phoneHud._height + 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
+					FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudTop }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 				}
 				_phoneIsFullyShown = !_phoneIsFullyShown;
 			}
@@ -578,6 +594,9 @@ class PlayState extends FlxState
 	{
 		_canTweenPhone = true;
 		_phoneIsFullyShown = true;
+		if (FlxG.keys.pressed.M) {
+			_phoneHud.startWritingSms();
+		}
 	}
 
 	private function phoneTweenClosingEnded(Tween:FlxTween):Void
@@ -711,6 +730,7 @@ class PlayState extends FlxState
 		// TODO: gérer le multi niveaux
 		if (won)
 		{
+			_soundFadeOut.play();
 			_batteryHudCam.fade(FlxColor.BLACK, .2, false);
 			_phoneHudCam.fade(FlxColor.BLACK, .2, false);
 			switch (_currentLevel)
@@ -745,6 +765,7 @@ class PlayState extends FlxState
 		}
 		else {
 			// LOSE
+			_soundFadeOut.play();
 			FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 			{
 				//TODO: reset que le niveau actuel ?
