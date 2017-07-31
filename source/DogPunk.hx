@@ -218,7 +218,7 @@ class DogPunk extends FlxSprite
 		else
 		{
 			trace("I SEE U");
-			FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.hackerSpeed)); 
+			FlxVelocity.moveTowardsPoint(this, _playerPosition, Std.int(Tweaking.dogPunkSpeed)); 
 			if (distance < Tweaking.dogpunkDistanceToHit && _canBully)
 			{
 				_playerInstance.getBulliedByDogpunk();
@@ -236,7 +236,7 @@ class DogPunk extends FlxSprite
 	{
 		
 		var o : FlxPoint = new	FlxPoint(130, 100);
-		FlxVelocity.moveTowardsPoint(this, _initialPos , Std.int(Tweaking.hackerSpeed));
+		FlxVelocity.moveTowardsPoint(this, _initialPos , Std.int(Tweaking.dogPunkSpeed));
 		_brain.activeState = idle;
 		
 	}

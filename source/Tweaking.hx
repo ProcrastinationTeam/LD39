@@ -70,6 +70,9 @@ class Tweaking
 	public static inline var dogpunkSprite								: String = "assets/images/MisterDougy.png";
 	public static inline var npcSpritePrefix							: String = "assets/images/MisterEverybody-";
 	
+	// Punk à chien
+	public static inline var dogPunkSpeed								: Float = 70;
+	
 	//public static inline var playerSprite								: String = "";
 	//public static inline var playerSprite								: String = "";
 	//public static inline var playerSprite								: String = "";
