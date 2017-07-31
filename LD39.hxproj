@@ -11,7 +11,7 @@
     <movie version="0" />
     <movie minorVersion="0" />
     <movie platform="Lime" />
-    <movie background="000000" />
+    <movie background="363636" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -26,12 +26,12 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="flixel=4.3.0&#xA;openfl=3.6.1&#xA;lime=2.9.1&#xA;hscript=2.1.1&#xA;flixel-addons=2.5.0&#xA;HXCPP_QUIET&#xA;openfl-next&#xA;tools=2.9.1&#xA;NAPE_NO_INLINE&#xA;no-compilation&#xA;native&#xA;FLX_NO_TOUCH&#xA;lime-native&#xA;openfl-native&#xA;windows&#xA;desktop&#xA;display" />
+    <option directives="flixel=4.3.0&#xA;openfl=3.6.1&#xA;lime=2.9.1&#xA;hscript=2.1.1&#xA;flixel-addons=2.5.0&#xA;HXCPP_QUIET&#xA;openfl-next&#xA;tools=2.9.1&#xA;NAPE_NO_INLINE&#xA;FLX_NO_DEBUG&#xA;no-compilation&#xA;NAPE_RELEASE_BUILD&#xA;native&#xA;FLX_NO_TOUCH&#xA;lime-native&#xA;openfl-native&#xA;windows&#xA;desktop&#xA;display" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="False" />
-    <option additional="--remap flash:openfl&#xA;--macro flixel.system.macros.FlxDefines.run()&#xA;-debug " />
+    <option additional="--remap flash:openfl&#xA;--macro flixel.system.macros.FlxDefines.run()" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
