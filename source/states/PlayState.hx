@@ -439,7 +439,7 @@ class PlayState extends FlxState
 		}
 
 		// BULLY SECTION
-		if (FlxG.keys.pressed.X && _player._canBully)
+		if (FlxG.keys.pressed.H && _player._canBully)
 		{
 			_hackers.forEachAlive(TryToBullyHacker);
 			_npcs.forEachAlive(TryToBullyNpc);
@@ -487,7 +487,7 @@ class PlayState extends FlxState
 
 		// Si on reste appuyé sur M pendant X secondes, on reset le nombre de messages envoyés par maman
 		// TODO: empêcher de bouger le player
-		if (FlxG.keys.pressed.M && _phoneIsFullyShown && _momMessagesCount > 0)
+		if (FlxG.keys.pressed.J && _phoneIsFullyShown && _momMessagesCount > 0)
 		{
 			_player._isOnHisPhone = true;
 			_timeSendingMessage += elapsed;
@@ -500,12 +500,12 @@ class PlayState extends FlxState
 				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudBottom }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 		}
-		else if (FlxG.keys.justPressed.M && _momMessagesCount > 0 && _canTweenPhone)
+		else if (FlxG.keys.justPressed.J && _momMessagesCount > 0 && _canTweenPhone)
 		{
 			_canTweenPhone = false;
 			FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudTop }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenOpeningEnded });
 		}
-		if (FlxG.keys.checkStatus(M, RELEASED) && FlxG.keys.checkStatus(T, RELEASED) && !_isInCallWithMom)
+		if (FlxG.keys.checkStatus(J, RELEASED) && FlxG.keys.checkStatus(T, RELEASED) && !_isInCallWithMom)
 		{
 			_player._isOnHisPhone = false;
 			_timeSendingMessage = 0;
@@ -612,7 +612,7 @@ class PlayState extends FlxState
 	{
 		_canTweenPhone = true;
 		_phoneIsFullyShown = true;
-		if (FlxG.keys.pressed.M) {
+		if (FlxG.keys.pressed.J) {
 			_phoneHud.startWritingSms();
 		}
 	}
