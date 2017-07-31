@@ -8,6 +8,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.input.FlxPointer;
 import flixel.math.FlxMath;
 import flixel.system.FlxSound;
 import flixel.tile.FlxTilemap;
@@ -19,6 +20,7 @@ import flixel.util.FlxTimer;
 import hud.BatteryHUD;
 import hud.PhoneHUD;
 import states.GameOverState;
+import hud.StaminaHUD;
 
 class PlayState extends FlxState
 {
@@ -30,9 +32,6 @@ class PlayState extends FlxState
 	private var _battery							: Battery;
 
 	private var _exit 								: FlxSprite;
-
-	private var _batteryHud 						: BatteryHUD;
-	private var _phoneHud							: PhoneHUD;
 
 	private var _currentLevel						: Levels;
 
@@ -68,10 +67,16 @@ class PlayState extends FlxState
 
 	private var _phoneIsFullyShown					: Bool = false;
 
+	private var _soundNewMessage					: FlxSound;
+
+	// HUD
 	private var _batteryHudCam 						: FlxCamera;
 	private var _phoneHudCam 						: FlxCamera;
+	//private var _staminaHudCam						: FlxCamera;
 
-	private var _soundNewMessage					: FlxSound;
+	private var _batteryHud 						: BatteryHUD;
+	private var _phoneHud							: PhoneHUD;
+	private var _staminaHud							: StaminaHUD;
 
 	public function new(level:Levels)
 	{
@@ -180,8 +185,7 @@ class PlayState extends FlxState
 		});
 		add(_maxiGroup);
 
-		////////////////////////////////////// HUD HUD
-		// HUD (partie gauche)
+		////////////////////////////////////// BATTERY HUD
 		_batteryHud = new BatteryHUD(_player);
 		add(_batteryHud);
 
@@ -193,7 +197,6 @@ class PlayState extends FlxState
 		/////////////////////////////////////
 
 		//////////////////////////////////// PHONE HUD
-		// Telephone HUD
 		_phoneHud = new PhoneHUD(_player);
 		add(_phoneHud);
 
@@ -205,11 +208,25 @@ class PlayState extends FlxState
 		FlxG.cameras.add(_phoneHudCam);
 		////////////////////////////////////
 
+		//////////////////////////////////// STAMINA HUD
+		_staminaHud = new StaminaHUD(_player);
+		add(_staminaHud);
+
+		// Caméra pour le HUD du téléphone
+		//_staminaHudCam = new FlxCamera(290, 115, _staminaHud._width, _staminaHud._height);
+		//_staminaHudCam.zoom = 1;
+		//_staminaHudCam.bgColor = FlxColor.TRANSPARENT;
+		//_staminaHudCam.follow(_staminaHud._staminaBar, NO_DEAD_ZONE);
+		//FlxG.cameras.add(_staminaHudCam);
+		////////////////////////////////////
+
 		// ZONE DE DEBUG
 		FlxG.watch.add(_battery, "_numberOfHackersHacking" );
 		// FIN DE ZONE DE DEBUG
 
 		FlxG.camera.fade(FlxColor.BLACK, .2, true);
+		_batteryHudCam.fade(FlxColor.BLACK, .2, true);
+		_phoneHudCam.fade(FlxColor.BLACK, .2, true);
 
 		super.create();
 	}
@@ -653,6 +670,8 @@ class PlayState extends FlxState
 		// TODO: gérer le multi niveaux
 		if (won)
 		{
+			_batteryHudCam.fade(FlxColor.BLACK, .2, false);
+			_phoneHudCam.fade(FlxColor.BLACK, .2, false);
 			switch (_currentLevel)
 			{
 				case TUTO :

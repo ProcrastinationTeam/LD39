@@ -17,12 +17,6 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 	// Rectangle de background
 	public var _backgroundSprite			: FlxSprite;
 
-	private var _staminaText				: FlxText;
-	private var _staminaBar					: FlxBar;
-
-	private var _bullyDelayText				: FlxText;
-	private var _bullyDelayBar				: FlxBar;
-
 	private var _batteryBar					: FlxBar;
 	private var _batteryText 				: FlxText;
 	
@@ -39,28 +33,8 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 		_backgroundSprite = new FlxSprite(x, 0).makeGraphic(_width, _height, FlxColor.BLACK);
 		add(_backgroundSprite);
 
-		_staminaText = new FlxText(x + 2, 0);
-		_staminaText.height = 16;
-		_staminaText.text = "STAMINA";
-		add(_staminaText);
-
-		_staminaBar = new FlxBar(x, 16, LEFT_TO_RIGHT, 64, 16);
-		_staminaBar.createColoredEmptyBar(FlxColor.GREEN, true, FlxColor.WHITE);
-		_staminaBar.setRange(0, Tweaking.playerMaxStamina);
-		add(_staminaBar);
-
-		_bullyDelayText = new FlxText(x + 2, 32);
-		_bullyDelayText.height = 16;
-		_bullyDelayText.text = "BULLY CD";
-		add(_bullyDelayText);
-
-		_bullyDelayBar = new FlxBar(x + 0, 48, LEFT_TO_RIGHT, 64, 16);
-		_bullyDelayBar.createColoredFilledBar(FlxColor.RED, true, FlxColor.WHITE);
-		_bullyDelayBar.setRange(0, Tweaking.playerBullyingDelay);
-		add(_bullyDelayBar);
-
 		// TODO: virer le vert dégueu du background
-		_batteryBar = new FlxBar(x + 0, 64, BOTTOM_TO_TOP, 64, 418);
+		_batteryBar = new FlxBar(x + 0, 0, BOTTOM_TO_TOP, 64, 482);
 		_batteryBar.createGradientFilledBar([FlxColor.BLUE, FlxColor.PURPLE, FlxColor.RED], 16, 90, true, FlxColor.BLACK);
 		add(_batteryBar);
 
@@ -71,12 +45,6 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 		_batteryText.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
 		add(_batteryText);
 		
-		// CA CASSE TOUT
-		//forEach(function(sprite:FlxSprite)
-		//{
-			//sprite.scrollFactor.set(0, 0);
-		//});
-
 		_player = player;
 		_battery = Battery.instance;
 	}
@@ -92,9 +60,5 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 		if (_battery._batteryLevel < Tweaking.batteryLowBatteryThreshold) {
 			// TODO: Afficher un hud de low batterie
 		}
-
-		_staminaBar.value = _player._currentStamina;
-
-		_bullyDelayBar.value = Tweaking.playerBullyingDelay - _player._currentBullyCooldown;
 	}
 }
