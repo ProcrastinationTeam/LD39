@@ -427,6 +427,7 @@ class PlayState extends FlxState
 				_momMessagesCount = 0;
 				_timeSendingMessage = 0;
 				_player._isOnHisPhone = false;
+				_phoneHud.stopWritingSms();
 				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 		}
@@ -442,12 +443,13 @@ class PlayState extends FlxState
 			if (_phoneIsFullyShown && _canTweenPhone)
 			{
 				_canTweenPhone = false;
+				_phoneHud.stopWritingSms();
 				FlxTween.tween(_phoneHudCam, { x: _phoneHudCam.x, y: _phoneHudCam.y + _phoneHud._height - 32 }, Tweaking.phoneOpeningTime, { ease: FlxEase.quadInOut, onComplete: phoneTweenClosingEnded });
 			}
 			// TODO: attendre le minimum de temps et retweener
 		}
 
-		_phoneHud.updatePhoneHUD(_momMessagesCount);
+		_phoneHud.updatePhoneHUD(_momMessagesCount, _player._isOnHisPhone && !_player._isInCallWithMom);
 
 		/////////////////////////////////////////////////////////////////////// SECTION DEBUG
 		// Il faut obligatoirement avoir SHIFT d'enfoncer pour utiliser ces fonctions de debug
@@ -541,6 +543,9 @@ class PlayState extends FlxState
 	{
 		_canTweenPhone = true;
 		_phoneIsFullyShown = true;
+		if (FlxG.keys.pressed.M) {
+			_phoneHud.startWritingSms();
+		}
 	}
 
 	private function phoneTweenClosingEnded(Tween:FlxTween):Void
