@@ -98,6 +98,7 @@ class PlayState extends FlxState
 		switch (_currentLevel)
 		{
 			case TUTO :
+				new Battery(Tweaking.batteryInitialLevel);
 				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
 			case LEVEL_1 :
 				_map = new FlxOgmoLoader(AssetPaths.level_1__oel);

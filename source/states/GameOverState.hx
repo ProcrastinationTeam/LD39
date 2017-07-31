@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import states.ExplicationsState;
 
 class GameOverState extends FlxState
 {
@@ -87,7 +88,7 @@ class GameOverState extends FlxState
 	{
 		FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 		{
-			FlxG.switchState(new MenuState());
+			FlxG.switchState(new ExplicationsState());
 		});
 	}
 }
