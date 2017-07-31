@@ -36,8 +36,8 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 		//add(_backgroundSprite);
 
 		// TODO: virer le vert dégueu du background
-		_batteryBar = new FlxBar(x + 8, 8, BOTTOM_TO_TOP, 48, 482);
-		_batteryBar.createGradientFilledBar([FlxColor.BLUE, FlxColor.PURPLE, FlxColor.RED], 16, 90, true, FlxColor.BLACK);
+		_batteryBar = new FlxBar(x + 8, 8, BOTTOM_TO_TOP, 48, 480);
+		_batteryBar.createGradientBar([FlxColor.BLACK], [FlxColor.BLUE, FlxColor.PURPLE, FlxColor.RED], 16, 90);
 		add(_batteryBar);
 		
 		_batterySprite = new FlxSprite().loadGraphic(AssetPaths.BatteryHUD__png, false, 64, 480);
