@@ -45,28 +45,19 @@ class DogPunk extends FlxSprite
 
 	public function new(X:Float=0, Y:Float=0,Id : Int, player: Player)
 	{
-		trace("J'existe");
 		super(X, Y);
 		id = Id;
-		//etype = EType;
 		_playerInstance = player; 
 		
-		//LOADING SPRITE RANDOM
-		//_actualSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
-		loadGraphic("assets/images/dogpunk.png", true, 16, 16);
-		animation.add("idle", [0], 6, false);
 
-		//setFacingFlip(FlxObject.LEFT, false, false);
-		//setFacingFlip(FlxObject.RIGHT, true, false);
+		loadGraphic(Tweaking.dogpunkSprite, true, 16, 16);
+		animation.add("idle", [0], 6, false);
+		animation.add("run", [0,1,2], 6, false);
+		
+		setFacingFlip(FlxObject.RIGHT, false, false);
+		setFacingFlip(FlxObject.LEFT, true, false);
 
 		drag.x = drag.y = 10;
-		
-		
-		
-		//width = 8;
-		//height = 14;
-		//offset.x = 4;
-		//offset.y = 2;
 
 		setSize(6, 4);
 		offset.set(5, 12);
@@ -80,10 +71,9 @@ class DogPunk extends FlxSprite
 		//DEBUG SECTION
 		FlxG.watch.add(this, "_initialPos", "DOG :");
 		FlxG.watch.add(this, "_initialPos2", "DOG 2 :");
-		 _initialPos2 = this.getScreenPosition();
-		 
+		
+		_initialPos2 = this.getScreenPosition();
 		_initialPos = new FlxPoint(X, Y);
-		//_initialPos = this.getPosition();
 
 	}
 
@@ -107,17 +97,13 @@ class DogPunk extends FlxSprite
 			}
 
 			//PAS D'ANIMATION ACTUELLEMENT
-			//switch (facing)
-			//{
-			//case FlxObject.LEFT, FlxObject.RIGHT:
-			//// animation.play("lr");
-//
-			//case FlxObject.UP:
-			//animation.play("u");
-//
-			//case FlxObject.DOWN:
-			//animation.play("d");
-			//}
+			switch (facing)
+				{
+					case FlxObject.LEFT, FlxObject.RIGHT, FlxObject.UP, FlxObject.DOWN:
+						{
+							animation.play("run");
+						}
+				}
 		}
 		super.draw();
 	}
@@ -190,7 +176,7 @@ class DogPunk extends FlxSprite
 
 	public function idle():Void
 	{
-		animation.play("idle");
+		//animation.play("idle");
 
 		if (_seesPlayer && _isOffensive)
 		{
@@ -245,17 +231,10 @@ class DogPunk extends FlxSprite
 	public function goBackHome():Void
 	{
 		
-			var o : FlxPoint = new	FlxPoint(130, 100);
-			//FlxVelocity.moveTowardsPoint(this, _initialPos2 , Std.int(Tweaking.hackerSpeed));
-		this.setPosition(_initialPos.x,_initialPos.y);
-	
-		trace(this.getPosition().toString());
-		trace("INITIAL POS :" + _initialPos.toString());
-		//if (this.getPosition() == _initialPos)
-		//{
-			_brain.activeState = idle;
-			//trace("IDLE");
-		//}
+		var o : FlxPoint = new	FlxPoint(130, 100);
+		FlxVelocity.moveTowardsPoint(this, _initialPos , Std.int(Tweaking.hackerSpeed));
+		_brain.activeState = idle;
+		
 	}
 	
 

@@ -30,13 +30,14 @@ class Player extends FlxSprite
 	{
 		super(X, Y);
 
-		loadGraphic(AssetPaths.player__png, true, 16, 16);
-		setFacingFlip(FlxObject.LEFT, false, false);
-		setFacingFlip(FlxObject.RIGHT, true, false);
-
-		animation.add("lr", [3, 4, 3, 5], 6, false);
-		animation.add("u", [6, 7, 6, 8], 6, false);
-		animation.add("d", [0, 1, 0, 2], 6, false);
+		loadGraphic(Tweaking.playerSprite, true, 16, 16);
+		setFacingFlip(FlxObject.RIGHT, false, false);
+		setFacingFlip(FlxObject.LEFT, true, false);
+		
+		animation.add("idle", [0], 10, true);
+		animation.add("walk", [0, 1, 2, 1], 6, true);
+		animation.add("run", [4, 3], 6, true);
+		
 
 		drag.x = drag.y = 1600;
 
@@ -185,18 +186,29 @@ class Player extends FlxSprite
 			velocity.set(velocityX, 0);
 			velocity.rotate(FlxPoint.weak(0, 0), _ma);
 
-			if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
+			if ((velocity.x != 0 || velocity.y != 0) /*&& touching == FlxObject.NONE*/)
 			{
-				switch (facing)
+				if (_isSprinting)
+						{
+							animation.play("run");
+						}
+						else
+						{
+							animation.play("walk");
+						}
+				
+				/*switch (facing)
 				{
-					case FlxObject.LEFT, FlxObject.RIGHT:
-						animation.play("lr");
-					case FlxObject.UP:
-						animation.play("u");
-					case FlxObject.DOWN:
-						animation.play("d");
-				}
+					case FlxObject.LEFT, FlxObject.RIGHT, FlxObject.UP, FlxObject.DOWN:
+						
+				}*/
 			}
+			
+		}
+		else
+		{
+				//trace("NOT MOVING");
+			animation.play("idle");
 		}
 	}
 }

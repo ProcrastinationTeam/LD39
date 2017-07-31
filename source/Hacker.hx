@@ -28,7 +28,7 @@ class Hacker extends FlxSprite
 	public var _isCurrentlyHacking							: Bool = false;
 
 	public var _actualSpriteName 							: String;
-	public var _hackerSpriteName 							: String = "assets/images/enemy-1.png";
+	public var _hackerSpriteName 							: String = Tweaking.hackerSprite;
 
 	//DEBUG LOG
 	public var distance 									: Int;
@@ -42,18 +42,16 @@ class Hacker extends FlxSprite
 		
 		
 		//LOADING SPRITE RANDOM
-		_actualSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
+		_actualSpriteName = Tweaking.npcSpritePrefix +  FlxG.random.int(1, 5) + ".png";
 		loadGraphic(_actualSpriteName, true, 16, 16);
+		setFacingFlip(FlxObject.LEFT, true, false);
+		setFacingFlip(FlxObject.RIGHT, false, false);
+		
 		animation.add("idle", [0], 6, false);
-
-		//setFacingFlip(FlxObject.LEFT, false, false);
-		//setFacingFlip(FlxObject.RIGHT, true, false);
+		animation.add("walk", [0,1,2,1], 6, true);
+	
 
 		drag.x = drag.y = 10;
-		//width = 8;
-		//height = 14;
-		//offset.x = 4;
-		//offset.y = 2;
 
 		setSize(6, 4);
 		offset.set(5, 12);
@@ -88,17 +86,17 @@ class Hacker extends FlxSprite
 			}
 
 			//PAS D'ANIMATION ACTUELLEMENT
-			//switch (facing)
-			//{
-			//case FlxObject.LEFT, FlxObject.RIGHT:
-			//// animation.play("lr");
-//
-			//case FlxObject.UP:
-			//animation.play("u");
-//
-			//case FlxObject.DOWN:
-			//animation.play("d");
-			//}
+			switch (facing)
+				{
+					case FlxObject.LEFT, FlxObject.RIGHT, FlxObject.UP, FlxObject.DOWN:
+						{
+							animation.play("walk");
+						}
+				}
+		}
+		else
+		{
+			animation.play("idle");
 		}
 		super.draw();
 	}
@@ -125,7 +123,8 @@ class Hacker extends FlxSprite
 		{
 			_actualSpriteName = _hackerSpriteName;
 			loadGraphic(_actualSpriteName, true, 16, 16);
-			animation.add("hack", [0, 1, 0], 6, true);
+			animation.add("walk", [0,1,2,1], 6, true);
+			//animation.add("hack", [0, 1, 0], 6, true);
 			animation.add("idle", [0], 6, false);
 		}
 
@@ -163,7 +162,7 @@ class Hacker extends FlxSprite
 
 	public function idle():Void
 	{
-		animation.play("idle");
+		
 
 		if (_seesPlayer && _isOffensive)
 		{
@@ -231,7 +230,7 @@ class Hacker extends FlxSprite
 					//Animation gestion
 					if (_actualSpriteName == _hackerSpriteName)
 					{
-						animation.play("hack");
+						//animation.play("hack");
 					}
 					_isInRangeForHack = true;
 				}

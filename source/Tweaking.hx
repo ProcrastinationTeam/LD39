@@ -61,4 +61,17 @@ class Tweaking
 	public static inline var momCallDelayBetweenScreenShakes			: Float = 0.5;
 	
 	public static inline var phoneOpeningTime							: Float = 0.3;
+	
+	
+	// SPRITE SECTION
+	public static inline var playerSprite								: String = "assets/images/MisterBelly.png";
+	public static inline var hackerSprite								: String = "assets/images/MisterHacky.png";
+	public static inline var dogpunkSprite								: String = "assets/images/MisterDougy.png";
+	public static inline var npcSpritePrefix							: String = "assets/images/MisterEverybody-";
+	
+	//public static inline var playerSprite								: String = "";
+	//public static inline var playerSprite								: String = "";
+	//public static inline var playerSprite								: String = "";
+	//public static inline var playerSprite								: String = "";
+	
 }

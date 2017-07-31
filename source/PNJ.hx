@@ -18,7 +18,7 @@ class PNJ extends FlxSprite
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
 	
-	public var _initialSpriteName : String;
+	public var _actualSpriteName 							: String;
 
 	public function new(X:Float=0, Y:Float=0, Id : Int)
 	{
@@ -26,19 +26,15 @@ class PNJ extends FlxSprite
 		id = Id;
 
 		//remplacer le EType par un random
-		_initialSpriteName = "assets/images/pnj-" + FlxG.random.int(0, 3) +".png";
-		loadGraphic(_initialSpriteName, true, 16, 16);
-
-		//setFacingFlip(FlxObject.LEFT, false, false);
-		//setFacingFlip(FlxObject.RIGHT, true, false);
-		//animation.add("hack", [0, 1, 0], 6, true);
-		animation.add("idle", [0], 6, false);
+		_actualSpriteName = Tweaking.npcSpritePrefix +  FlxG.random.int(1, 5) + ".png";
+		loadGraphic(_actualSpriteName, true, 16, 16);
+		setFacingFlip(FlxObject.LEFT, true, false);
+		setFacingFlip(FlxObject.RIGHT, false, false);
+		
+		animation.add("idle", [0], 6, true);
+		animation.add("walk", [0,1,2,1], 6, true);
+		
 		drag.x = drag.y = 10;
-		//width = 4;
-		//height = 4;
-		//offset.x = 6;
-		//offset.y = 12;
-
 		setSize(6, 4);
 		offset.set(5, 12);
 		
@@ -74,17 +70,18 @@ class PNJ extends FlxSprite
 			}
 
 			//PAS D'ANIMATION ACTUELLEMENT
-			//switch (facing)
-			//{
-			//case FlxObject.LEFT, FlxObject.RIGHT:
-			//// animation.play("lr");
-			//
-			//case FlxObject.UP:
-			//animation.play("u");
-			//
-			//case FlxObject.DOWN:
-			//animation.play("d");
-			//}
+			/*switch (facing)
+				{
+					case FlxObject.LEFT, FlxObject.RIGHT, FlxObject.UP, FlxObject.DOWN:
+						{
+							animation.play("walk");
+						}
+				}*/
+				animation.play("walk");
+		}
+		else
+		{
+			animation.play("idle");
 		}
 		super.draw();
 	}
@@ -92,7 +89,7 @@ class PNJ extends FlxSprite
 	
 	public function idle():Void
 	{
-		animation.play("idle");
+		//animation.play("idle");
 		
 		if (_idleTmr <= 0)
 		{
