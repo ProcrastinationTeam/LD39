@@ -11,6 +11,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.addons.text.FlxTypeText;
 import flixel.util.FlxTimer;
+import flixel.system.FlxSound;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -48,6 +49,8 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 
 	private var _isTexting					: Bool = false;
 
+	private var _soundMom					: FlxSound;
+	
 	public function new(player:Player)
 	{
 		super();
@@ -138,6 +141,8 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 		_textPlayerBackground.visible = false;
 		add(_textPlayerBackground);
 		add(_textPlayer);
+		
+		_soundMom = FlxG.sound.load(AssetPaths.mom__wav);
 
 		//_player = player;
 		_battery = Battery.instance;
@@ -239,6 +244,7 @@ class PhoneHUD extends FlxTypedGroup<FlxSprite>
 	{
 		_callSprite32.visible = true;
 		_callSprite32.animation.play("call");
+		_soundMom.play();
 	}
 
 	/**
