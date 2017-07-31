@@ -192,7 +192,8 @@ class PlayState extends FlxState
 		// Caméra pour le HUD (on sait pas trop comment, mais ça marche)
 		_batteryHudCam = new FlxCamera(0, 0, _batteryHud._width, _batteryHud._height, 1);
 		_batteryHudCam.zoom = 1;
-		_batteryHudCam.follow(_batteryHud._backgroundSprite, NO_DEAD_ZONE);
+		_batteryHudCam.bgColor = FlxColor.TRANSPARENT;
+		_batteryHudCam.follow(_batteryHud._batterySprite, NO_DEAD_ZONE);
 		FlxG.cameras.add(_batteryHudCam);
 		/////////////////////////////////////
 

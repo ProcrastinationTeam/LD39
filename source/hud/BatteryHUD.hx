@@ -15,14 +15,16 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 	public var _height						: Int = 480; 
 	
 	// Rectangle de background
-	public var _backgroundSprite			: FlxSprite;
+	//public var _backgroundSprite			: FlxSprite;
 
-	private var _batteryBar					: FlxBar;
+	public var _batteryBar					: FlxBar;
 	private var _batteryText 				: FlxText;
 	
 	// Référence au player (pas propre ? pratique en tout cas)
 	private var _player 					: Player;
 	private var _battery					: Battery;
+	
+	public var _batterySprite				: FlxSprite;
 	
 	public function new(player:Player)
 	{
@@ -30,15 +32,19 @@ class BatteryHUD extends FlxTypedGroup<FlxSprite>
 		
 		var x: Int = 10000;
 
-		_backgroundSprite = new FlxSprite(x, 0).makeGraphic(_width, _height, FlxColor.BLACK);
-		add(_backgroundSprite);
+		//_backgroundSprite = new FlxSprite(x, 0).makeGraphic(_width, _height, FlxColor.BLACK);
+		//add(_backgroundSprite);
 
 		// TODO: virer le vert dégueu du background
-		_batteryBar = new FlxBar(x + 0, 0, BOTTOM_TO_TOP, 64, 482);
+		_batteryBar = new FlxBar(x + 8, 8, BOTTOM_TO_TOP, 48, 482);
 		_batteryBar.createGradientFilledBar([FlxColor.BLUE, FlxColor.PURPLE, FlxColor.RED], 16, 90, true, FlxColor.BLACK);
 		add(_batteryBar);
+		
+		_batterySprite = new FlxSprite().loadGraphic(AssetPaths.BatteryHUD__png, false, 64, 480);
+		_batterySprite.setPosition(x + 0, 0);
+		add(_batterySprite);
 
-		_batteryText = new FlxText(x + 8, 250);
+		_batteryText = new FlxText(x + 12, 250);
 		_batteryText.color = 0xFFFFFF;
 		_batteryText.size = 18;
 		_batteryText.setSize(64, 30);
