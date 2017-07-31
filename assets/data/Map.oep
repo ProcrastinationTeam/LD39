@@ -9,8 +9,8 @@
     <Height>480</Height>
   </LevelDefaultSize>
   <LevelMinimumSize>
-    <Width>640</Width>
-    <Height>480</Height>
+    <Width>320</Width>
+    <Height>240</Height>
   </LevelMinimumSize>
   <LevelMaximumSize>
     <Width>1280</Width>
@@ -40,6 +40,18 @@
     </LayerDefinition>
     <LayerDefinition xsi:type="TileLayerDefinition">
       <Name>foreground</Name>
+      <Grid>
+        <Width>16</Width>
+        <Height>16</Height>
+      </Grid>
+      <ScrollFactor>
+        <X>1</X>
+        <Y>1</Y>
+      </ScrollFactor>
+      <ExportMode>CSV</ExportMode>
+    </LayerDefinition>
+    <LayerDefinition xsi:type="TileLayerDefinition">
+      <Name>hiddenground</Name>
       <Grid>
         <Width>16</Width>
         <Height>16</Height>

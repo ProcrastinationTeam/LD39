@@ -27,6 +27,7 @@ class PlayState extends FlxState
 	private var _map 								: FlxOgmoLoader;
 	private var _walls 								: FlxTilemap;
 	private var _foreground							: FlxTilemap;
+	private var _hiddenground						: FlxTilemap;
 
 	private var _player 							: Player;
 	private var _battery							: Battery;
@@ -108,7 +109,7 @@ class PlayState extends FlxState
 		{
 			case TUTO :
 				new Battery(Tweaking.batteryInitialLevel);
-				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
+				_map = new FlxOgmoLoader(AssetPaths.tuto_new__oel);
 			case LEVEL_1 :
 				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
@@ -156,6 +157,11 @@ class PlayState extends FlxState
 		_foreground.setTileProperties(440, FlxObject.ANY);
 		_foreground.setTileProperties(440, FlxObject.ANY);
 		
+		if (_currentLevel == TUTO)
+		{
+		_hiddenground = _map.loadTilemap(AssetPaths.tO__png, 16, 16, "hiddenground");
+		_hiddenground.setTileProperties(889, FlxObject.ANY);
+		}
 		
 		/*_walls.setTileProperties(1, FlxObject.NONE);
 		_walls.setTileProperties(2, FlxObject.NONE);
@@ -389,21 +395,33 @@ class PlayState extends FlxState
 		FlxG.collide(_npcs, _walls);
 		FlxG.collide(_npcs, _foreground);
 		FlxG.collide(_npcs, _npcs);
+		
+		
 
 		// HACKER (ENEMY)
 		FlxG.collide(_hackers, _hackers); // Il semble que suite a un bullied ils se supperposent
 		FlxG.collide(_hackers, _npcs);
 		FlxG.collide(_hackers, _walls);
 		FlxG.collide(_hackers, _foreground);
+		
+		
 
 		// DOGPUNK (ENEMY)
 		FlxG.collide(_dogpunks, _dogpunks);
 		FlxG.collide(_dogpunks, _npcs);
 		FlxG.collide(_dogpunks, _walls);
 		FlxG.collide(_dogpunks, _foreground);
+		
+		FlxG.collide(_dogpunks, _hiddenground);
 
 		// POWERUP
 		FlxG.collide(_powerups, _walls);
+		
+		if (_currentLevel == TUTO)
+		{
+			FlxG.collide(_npcs, _hiddenground);
+			FlxG.collide(_hackers, _hiddenground);
+		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
