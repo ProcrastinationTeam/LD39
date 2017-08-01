@@ -115,7 +115,7 @@ class PlayState extends FlxState
 			case LEVEL_2 :
 				_map = new FlxOgmoLoader(AssetPaths.level_2_new__oel);
 			case LEVEL_3 :
-				_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
+				//_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
 			case END :
 				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
 		}
@@ -186,6 +186,16 @@ class PlayState extends FlxState
 		_walls.setTileProperties(789, FlxObject.NONE);
 		_walls.setTileProperties(827, FlxObject.NONE);
 		_walls.setTileProperties(907, FlxObject.NONE);
+		
+		_walls.setTileProperties(972, FlxObject.NONE);
+		_walls.setTileProperties(974, FlxObject.NONE);
+		_walls.setTileProperties(747, FlxObject.NONE);
+		_walls.setTileProperties(821, FlxObject.NONE);
+		_walls.setTileProperties(935, FlxObject.NONE);
+		_walls.setTileProperties(937, FlxObject.NONE);
+		_walls.setTileProperties(796, FlxObject.NONE);
+		_walls.setTileProperties(831, FlxObject.NONE);
+		_walls.setTileProperties(714, FlxObject.NONE);
 		
 		_foreground = _map.loadTilemap(AssetPaths.tO__png, 16, 16, "foreground");
 		
@@ -813,7 +823,8 @@ class PlayState extends FlxState
 				case LEVEL_2 :
 					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 					{
-						FlxG.switchState(new PlayState(LEVEL_3));
+						//FlxG.switchState(new PlayState(LEVEL_3));
+						FlxG.switchState(new PlayState(END));
 					});
 				case LEVEL_3 :
 					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
