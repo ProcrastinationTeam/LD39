@@ -117,7 +117,7 @@ class PlayState extends FlxState
 			case LEVEL_3 :
 				_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
 			case END :
-				_map = new FlxOgmoLoader(AssetPaths.end__oel);
+				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
 		}
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
@@ -616,6 +616,8 @@ class PlayState extends FlxState
 						_player.x = 576;
 						_player.y = 32;
 					case END :
+						_player.x = 160;
+						_player.y = 32;
 				}
 			}
 
@@ -786,12 +788,18 @@ class PlayState extends FlxState
 		if (won)
 		{
 			_soundFadeOut.play();
-			_batteryHudCam.fade(FlxColor.BLACK, .2, false);
-			_phoneHudCam.fade(FlxColor.BLACK, .2, false);
+			if (_currentLevel == END) {
+				_batteryHudCam.fade(FlxColor.BLACK, 3, false);
+				_phoneHudCam.fade(FlxColor.BLACK, 3, false);
+			} else {
+				_batteryHudCam.fade(FlxColor.BLACK, .2, false);
+				_phoneHudCam.fade(FlxColor.BLACK, .2, false);
+			}
+			
 			switch (_currentLevel)
 			{
 				case TUTO :
-					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					FlxG.camera.fade(FlxColor.BLACK, 0.2, false, function()
 					{
 						FlxG.switchState(new PlayState(LEVEL_1));
 					});
@@ -811,10 +819,9 @@ class PlayState extends FlxState
 						FlxG.switchState(new PlayState(END));
 					});
 				case END :
-					// TODO
-					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					FlxG.camera.fade(FlxColor.BLACK, 3, false, function()
 					{
-						FlxG.switchState(new MenuState());
+						FlxG.switchState(new GameOverState(true));
 					});
 			}
 		}
