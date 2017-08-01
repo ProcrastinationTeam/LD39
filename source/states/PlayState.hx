@@ -567,17 +567,17 @@ class PlayState extends FlxState
 				switch (_currentLevel)
 				{
 					case TUTO :
-						_player.x = 320;
-						_player.y = 208;
+						_player.x = 256;
+						_player.y = 432;
 					case LEVEL_1 :
-						_player.x = 595;
-						_player.y = 60;
+						_player.x = 1232;
+						_player.y = 432;
 					case LEVEL_2 :
-						_player.x = 600;
-						_player.y = 440;
+						_player.x = 48;
+						_player.y = 32;
 					case LEVEL_3 :
-						_player.x = 304;
-						_player.y = 176;
+						_player.x = 576;
+						_player.y = 32;
 					case END :
 				}
 			}
