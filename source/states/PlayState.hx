@@ -113,7 +113,7 @@ class PlayState extends FlxState
 			case LEVEL_1 :
 				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
-				_map = new FlxOgmoLoader(AssetPaths.level_2__oel);
+				_map = new FlxOgmoLoader(AssetPaths.level_2_new__oel);
 			case LEVEL_3 :
 				_map = new FlxOgmoLoader(AssetPaths.level_3__oel);
 			case END :
