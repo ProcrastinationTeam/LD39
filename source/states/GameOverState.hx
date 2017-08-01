@@ -18,6 +18,7 @@ class GameOverState extends FlxState
 	private var _win:Bool;				// if we won or lost
 	
 	private var _soundLose					: FlxSound;
+	private var _soundWin					: FlxSound;
 	
 	private var _soundFadeIn						: FlxSound;
 	private var _soundFadeOut						: FlxSound;
@@ -36,7 +37,13 @@ class GameOverState extends FlxState
 	override public function create():Void
 	{
 		_soundLose = FlxG.sound.load(AssetPaths.youlose__wav);
-		_soundLose.play();
+		_soundWin = FlxG.sound.load(AssetPaths.youwin__wav);
+		
+		if (!_win) {
+			_soundLose.play();
+		} else {
+			_soundWin.play();
+		}
 		
 		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
 		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);

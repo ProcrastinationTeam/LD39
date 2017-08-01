@@ -109,7 +109,7 @@ class PlayState extends FlxState
 		{
 			case TUTO :
 				new Battery(Tweaking.batteryInitialLevel);
-				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
+				_map = new FlxOgmoLoader(AssetPaths.tuto_new__oel);
 			case LEVEL_1 :
 				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
@@ -751,12 +751,18 @@ class PlayState extends FlxState
 		if (won)
 		{
 			_soundFadeOut.play();
-			_batteryHudCam.fade(FlxColor.BLACK, .2, false);
-			_phoneHudCam.fade(FlxColor.BLACK, .2, false);
+			if (_currentLevel == END) {
+				_batteryHudCam.fade(FlxColor.BLACK, 3, false);
+				_phoneHudCam.fade(FlxColor.BLACK, 3, false);
+			} else {
+				_batteryHudCam.fade(FlxColor.BLACK, .2, false);
+				_phoneHudCam.fade(FlxColor.BLACK, .2, false);
+			}
+			
 			switch (_currentLevel)
 			{
 				case TUTO :
-					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					FlxG.camera.fade(FlxColor.BLACK, 0.2, false, function()
 					{
 						FlxG.switchState(new PlayState(LEVEL_1));
 					});
@@ -778,7 +784,7 @@ class PlayState extends FlxState
 				case END :
 					FlxG.camera.fade(FlxColor.BLACK, 3, false, function()
 					{
-						FlxG.switchState(new MenuState());
+						FlxG.switchState(new GameOverState(true));
 					});
 			}
 		}
