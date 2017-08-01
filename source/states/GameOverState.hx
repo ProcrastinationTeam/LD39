@@ -53,7 +53,7 @@ class GameOverState extends FlxState
 		_titleImage = new FlxSprite(0, 0);
 		_titleImage.loadGraphic(AssetPaths.Flixoul__png, false, 64,64);
 		_titleImage.screenCenter();
-		add(_titleImage);
+		//add(_titleImage);
 
 		_startDisplay = new FlxText(0, 0, 0, "Click to go back to main menu", 18, true);
 		_startDisplay.screenCenter();
