@@ -109,7 +109,7 @@ class PlayState extends FlxState
 		{
 			case TUTO :
 				new Battery(Tweaking.batteryInitialLevel);
-				_map = new FlxOgmoLoader(AssetPaths.tuto_new__oel);
+				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
 			case LEVEL_1 :
 				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
@@ -117,7 +117,7 @@ class PlayState extends FlxState
 			case LEVEL_3 :
 				_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
 			case END :
-				_map = new FlxOgmoLoader(AssetPaths.end__oel);
+				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
 		}
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
@@ -579,6 +579,8 @@ class PlayState extends FlxState
 						_player.x = 576;
 						_player.y = 32;
 					case END :
+						_player.x = 160;
+						_player.y = 32;
 				}
 			}
 
@@ -774,8 +776,7 @@ class PlayState extends FlxState
 						FlxG.switchState(new PlayState(END));
 					});
 				case END :
-					// TODO
-					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
+					FlxG.camera.fade(FlxColor.BLACK, 3, false, function()
 					{
 						FlxG.switchState(new MenuState());
 					});
