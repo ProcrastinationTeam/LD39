@@ -14,9 +14,9 @@
   </LevelMinimumSize>
   <LevelMaximumSize>
     <Width>1280</Width>
-    <Height>480</Height>
+    <Height>960</Height>
   </LevelMaximumSize>
-  <Filename>C:\Users\Lucas\Desktop\GameJam\LD39\assets\data\Map.oep</Filename>
+  <Filename>D:\Media\Documents\Repos\LD39\assets\data\Map.oep</Filename>
   <AngleMode>Degrees</AngleMode>
   <CameraEnabled>false</CameraEnabled>
   <CameraSize>
