@@ -114,8 +114,8 @@ class PlayState extends FlxState
 				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
 				_map = new FlxOgmoLoader(AssetPaths.level_2_new__oel);
-			case LEVEL_3 :
-				_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
+			//case LEVEL_3 :
+				//_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
 			case END :
 				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
 		}
@@ -774,7 +774,8 @@ class PlayState extends FlxState
 				case LEVEL_2 :
 					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 					{
-						FlxG.switchState(new PlayState(LEVEL_3));
+						//FlxG.switchState(new PlayState(LEVEL_3));
+						FlxG.switchState(new PlayState(END));
 					});
 				case LEVEL_3 :
 					FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
