@@ -130,6 +130,42 @@ class PlayState extends FlxState
 		_walls.setTileProperties(306, FlxObject.ANY);
 		_walls.setTileProperties(342, FlxObject.ANY);
 		_walls.setTileProperties(343, FlxObject.ANY);
+		
+		
+		_walls.setTileProperties(825, FlxObject.NONE);
+		_walls.setTileProperties(821, FlxObject.NONE);
+		_walls.setTileProperties(820, FlxObject.NONE);
+		_walls.setTileProperties(858, FlxObject.NONE);
+		_walls.setTileProperties(713, FlxObject.NONE);
+		_walls.setTileProperties(750, FlxObject.NONE);
+		_walls.setTileProperties(944, FlxObject.NONE);
+		_walls.setTileProperties(1014, FlxObject.NONE);
+		_walls.setTileProperties(943, FlxObject.NONE);
+		_walls.setTileProperties(981, FlxObject.NONE);
+		_walls.setTileProperties(1015, FlxObject.NONE);
+		
+		
+		_walls.setTileProperties(787, FlxObject.NONE);
+		_walls.setTileProperties(786, FlxObject.NONE);
+		
+		_walls.setTileProperties(822, FlxObject.NONE);
+		_walls.setTileProperties(741, FlxObject.NONE);
+		_walls.setTileProperties(709, FlxObject.NONE);
+		_walls.setTileProperties(710, FlxObject.NONE);
+		_walls.setTileProperties(858, FlxObject.NONE);
+		_walls.setTileProperties(859, FlxObject.NONE);
+		_walls.setTileProperties(1017, FlxObject.NONE);
+		_walls.setTileProperties(828, FlxObject.NONE);
+		_walls.setTileProperties(796, FlxObject.NONE);
+		_walls.setTileProperties(746, FlxObject.NONE);
+		_walls.setTileProperties(747, FlxObject.NONE);
+		_walls.setTileProperties(1009, FlxObject.NONE);
+		_walls.setTileProperties(1011, FlxObject.NONE);
+		_walls.setTileProperties(1010, FlxObject.NONE);
+		_walls.setTileProperties(748, FlxObject.NONE);
+		//_walls.setTileProperties(1015, FlxObject.NONE);
+		//_walls.setTileProperties(1015, FlxObject.NONE);
+		
 		_walls.setTileProperties(888, FlxObject.NONE);
 		_walls.setTileProperties(925, FlxObject.NONE);
 		_walls.setTileProperties(926, FlxObject.NONE);
@@ -151,11 +187,12 @@ class PlayState extends FlxState
 		
 		_foreground = _map.loadTilemap(AssetPaths.tO__png, 16, 16, "foreground");
 		
-		_foreground.setTileProperties(403, FlxObject.ANY);
+		/*_foreground.setTileProperties(403, FlxObject.ANY);
 		_foreground.setTileProperties(440, FlxObject.ANY);
 		_foreground.setTileProperties(440, FlxObject.ANY);
 		_foreground.setTileProperties(440, FlxObject.ANY);
-		_foreground.setTileProperties(440, FlxObject.ANY);
+		_foreground.setTileProperties(440, FlxObject.ANY);*/
+		_foreground.setTileProperties(984, FlxObject.ANY);
 		
 		if (_currentLevel == TUTO)
 		{
