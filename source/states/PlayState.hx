@@ -143,11 +143,8 @@ class PlayState extends FlxState
 		_walls.setTileProperties(943, FlxObject.NONE);
 		_walls.setTileProperties(981, FlxObject.NONE);
 		_walls.setTileProperties(1015, FlxObject.NONE);
-		
-		
 		_walls.setTileProperties(787, FlxObject.NONE);
 		_walls.setTileProperties(786, FlxObject.NONE);
-		
 		_walls.setTileProperties(822, FlxObject.NONE);
 		_walls.setTileProperties(741, FlxObject.NONE);
 		_walls.setTileProperties(709, FlxObject.NONE);
@@ -163,6 +160,12 @@ class PlayState extends FlxState
 		_walls.setTileProperties(1011, FlxObject.NONE);
 		_walls.setTileProperties(1010, FlxObject.NONE);
 		_walls.setTileProperties(748, FlxObject.NONE);
+		_walls.setTileProperties(935, FlxObject.NONE);
+		_walls.setTileProperties(936, FlxObject.NONE);
+		_walls.setTileProperties(973, FlxObject.NONE);
+		_walls.setTileProperties(711, FlxObject.NONE);
+		_walls.setTileProperties(972, FlxObject.NONE);
+		_walls.setTileProperties(937, FlxObject.NONE);
 		//_walls.setTileProperties(1015, FlxObject.NONE);
 		//_walls.setTileProperties(1015, FlxObject.NONE);
 		
@@ -173,7 +176,6 @@ class PlayState extends FlxState
 		_walls.setTileProperties(962, FlxObject.NONE);
 		_walls.setTileProperties(963, FlxObject.NONE);
 		_walls.setTileProperties(964, FlxObject.NONE);
-		
 		_walls.setTileProperties(1000, FlxObject.NONE);
 		_walls.setTileProperties(1001, FlxObject.NONE);
 		_walls.setTileProperties(902, FlxObject.NONE);
