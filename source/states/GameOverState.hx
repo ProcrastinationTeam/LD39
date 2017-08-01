@@ -109,7 +109,7 @@ class GameOverState extends FlxState
 		FlxG.camera.fade(FlxColor.BLACK, .2, false, function()
 		{
 			_soundFadeOut.play();
-			FlxG.switchState(new ExplicationsState());
+			FlxG.switchState(new MenuState());
 		});
 	}
 }
