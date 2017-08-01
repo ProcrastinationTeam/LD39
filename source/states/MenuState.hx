@@ -51,7 +51,7 @@ class MenuState extends FlxState
 		_credit.y += 100;
 		add(_credit);
 
-		_moreCredit = new FlxText(0, 0, 0, "Twitter : @LucasTixier \n @GuillaumeLaMouille", 8, true);
+		_moreCredit = new FlxText(0, 0, 0, "Twitter : @LucasTixier \n @Eponopono", 8, true);
 		_moreCredit.screenCenter();
 		_moreCredit.y = _credit.y + 100;
 		add(_moreCredit);
