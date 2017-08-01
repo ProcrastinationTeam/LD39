@@ -27,8 +27,13 @@ class MenuState extends FlxState
 		_soundFadeIn = FlxG.sound.load(AssetPaths.fadein__wav);
 		_soundFadeOut = FlxG.sound.load(AssetPaths.fadeout__wav);
 		
-		_soundMusic = FlxG.sound.load(AssetPaths.satanic_pasbien__ogg);
-		FlxG.sound.playMusic(AssetPaths.satanic_pasbien__ogg, 0.3, true);
+		#if flash
+		//_soundMusic = FlxG.sound.load(AssetPaths.satanic_pasbien__mp3);
+		FlxG.sound.playMusic(AssetPaths.ost_v2__mp3, 0.3, true);
+		#else
+		//_soundMusic = FlxG.sound.load(AssetPaths.satanic_pasbien__ogg);
+		FlxG.sound.playMusic(AssetPaths.ost_v2__ogg, 0.3, true);
+		#end
 		
 		_alphaModifier = 0;
 
