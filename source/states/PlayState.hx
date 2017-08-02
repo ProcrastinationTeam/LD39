@@ -109,15 +109,15 @@ class PlayState extends FlxState
 		{
 			case TUTO :
 				new Battery(Tweaking.batteryInitialLevel);
-				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
+				_map = new FlxOgmoLoader(AssetPaths.tuto_new__oel);
 			case LEVEL_1 :
-				_map = new FlxOgmoLoader(AssetPaths.level_1__oel);
+				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
 			case LEVEL_2 :
-				_map = new FlxOgmoLoader(AssetPaths.level_2__oel);
+				_map = new FlxOgmoLoader(AssetPaths.level_2_new__oel);
 			case LEVEL_3 :
-				//_map = new FlxOgmoLoader(AssetPaths.level_3__oel);
+				//_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
 			case END :
-				_map = new FlxOgmoLoader(AssetPaths.end__oel);
+				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
 		}
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
