@@ -109,15 +109,15 @@ class PlayState extends FlxState
 		{
 			case TUTO :
 				new Battery(Tweaking.batteryInitialLevel);
-				_map = new FlxOgmoLoader(AssetPaths.tuto_new__oel);
+				_map = new FlxOgmoLoader(AssetPaths.tuto__oel);
 			case LEVEL_1 :
-				_map = new FlxOgmoLoader(AssetPaths.level_1_new__oel);
+				_map = new FlxOgmoLoader(AssetPaths.level_1__oel);
 			case LEVEL_2 :
-				_map = new FlxOgmoLoader(AssetPaths.level_2_new__oel);
+				_map = new FlxOgmoLoader(AssetPaths.level_2__oel);
 			case LEVEL_3 :
-				//_map = new FlxOgmoLoader(AssetPaths.level_3_new__oel);
+				//_map = new FlxOgmoLoader(AssetPaths.level_3__oel);
 			case END :
-				_map = new FlxOgmoLoader(AssetPaths.end_new__oel);
+				_map = new FlxOgmoLoader(AssetPaths.end__oel);
 		}
 
 		//Modification a faire sur le tileset et les TileProperties (RENDRE PLUS PROPRE)
@@ -570,6 +570,7 @@ class PlayState extends FlxState
 
 		_phoneHud.updatePhoneHUD(_momMessagesCount, _player._isOnHisPhone && !_player._isInCallWithMom);
 
+		#if debug
 		/////////////////////////////////////////////////////////////////////// SECTION DEBUG
 		// Il faut obligatoirement avoir SHIFT d'enfoncer pour utiliser ces fonctions de debug
 		if (FlxG.keys.pressed.SHIFT)
@@ -652,6 +653,7 @@ class PlayState extends FlxState
 			}
 		}
 		////////////////////////////////////////////////// FIN SECTION DEBUG
+		#end
 
 		// Si la batterie atteint les 0%, c'est un game over
 		if (_battery._batteryLevel <= 0)
