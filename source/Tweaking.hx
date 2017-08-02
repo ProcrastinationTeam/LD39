@@ -10,7 +10,8 @@ class Tweaking
 	public static inline var hackerSpeed								: Float = 80;
 	
 	// Interaction avec temps
-	public static inline var hackerKnockDownDuration					:Float = 2; // en seconde;
+	public static inline var hackerHitPoints							: Int = 1;
+	public static inline var hackerKnockDownDuration					: Float = 2; // en secondes
 	
 	// DOGPUNK
 	public static inline var dogpunkVisionDistance 						: Float = 100;
@@ -37,7 +38,7 @@ class Tweaking
 	public static inline var playerDelayAfterEmptyStamina 				: Float = playerStaminaRecoveryPerSecond * playerMaxStamina;
 	
 	// Interaction avec temps
-	public static inline var playerKnockDownDuration					: Float = 2; // en seconde;
+	public static inline var playerKnockDownDuration					: Float = 2; // en secondes;
 	
 	// Bullying
 	public static inline var playerMinDistanceToBully 					: Int = 20;
@@ -63,8 +64,7 @@ class Tweaking
 	
 	public static inline var phoneOpeningTime							: Float = 0.3;
 	
-	
-	// SPRITE SECTION
+	// SPRITES SECTION
 	public static inline var playerSprite								: String = "assets/images/MisterBelly.png";
 	public static inline var hackerSprite								: String = "assets/images/MisterHacky.png";
 	public static inline var dogpunkSprite								: String = "assets/images/MisterDougy.png";
@@ -77,5 +77,4 @@ class Tweaking
 	//public static inline var playerSprite								: String = "";
 	//public static inline var playerSprite								: String = "";
 	//public static inline var playerSprite								: String = "";
-	
 }
