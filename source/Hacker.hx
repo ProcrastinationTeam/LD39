@@ -23,7 +23,7 @@ class Hacker extends FlxSprite
 	
 
 	public var _isInRangeForHack 							: Bool = false;
-	public var _life 										: Int = 2;
+	public var _life 										: Int = Tweaking.hackerHitPoints;
 	public var _isOffensive 								: Bool = true;
 	public var _isAbleToMove								: Bool = true;
 	public var _isCurrentlyHacking							: Bool = false;

@@ -570,6 +570,7 @@ class PlayState extends FlxState
 
 		_phoneHud.updatePhoneHUD(_momMessagesCount, _player._isOnHisPhone && !_player._isInCallWithMom);
 
+		#if debug
 		/////////////////////////////////////////////////////////////////////// SECTION DEBUG
 		// Il faut obligatoirement avoir SHIFT d'enfoncer pour utiliser ces fonctions de debug
 		if (FlxG.keys.pressed.SHIFT)
@@ -652,6 +653,7 @@ class PlayState extends FlxState
 			}
 		}
 		////////////////////////////////////////////////// FIN SECTION DEBUG
+		#end
 
 		// Si la batterie atteint les 0%, c'est un game over
 		if (_battery._batteryLevel <= 0)
